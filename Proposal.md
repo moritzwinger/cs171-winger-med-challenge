@@ -60,4 +60,19 @@ well as have an idea why a certain clientele chooses to go to that specific shop
 The visualization could exhibit the feature of time resolution. Also, the uncertainty of the data set
 needs to be expressed.
 
+### Project Schedule
+
+Week 1: Design and Analysis: Preparation of the data and analysis of the data for visualization.
+        The design will be strongly governed by the questions addressed by the problem.
+
+Week 2: Implementation of Basic Functionality, Building Framework and Objects for the different
+        views.
+
+Week 3: Further implementation of the visualization, design improvements as the implementation
+        progresses.
+
+Week 4: Specific address of the question posed by the challenge.
+
+Week 5: Implementation of Optional Features, Design refinement.
+
 

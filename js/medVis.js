@@ -7,8 +7,11 @@ MedVis = function(_parentElement, _cityData, _clientData, _perClientData, _refer
     this.parentElement = _parentElement;
     this.referrerData = _referrerData;
     this.storeData = _storeData;
-    this.displayData = [];
-    this.graph = {nodes: [], links: []};
+    this.displayReferrerData = [];
+    this.displayPerClientData= _perClientData;
+
+    this.referrerGraph = {nodes: [], links: []};
+    this.clientGraph = {nodes: [], links: []};
 
     // define all constants here
     this.margin = {top: 20, right: 0, bottom: 30, left: 20},
@@ -31,10 +34,10 @@ MedVis.prototype.initVis = function(){
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     this.x = d3.scale.linear()
-        .range([20, this.width]);
+        .range([this.width, 20]);
 
     this.y = d3.scale.linear()
-        .range([20, this.height]);
+        .range([this.height, 20]);
 
     // modify this to append an svg element, not modify the current placeholder SVG element
     this.svg = this.parentElement.select("svg");
@@ -50,7 +53,7 @@ MedVis.prototype.initVis = function(){
  * @param _filterFunction - a function that filters data or "null" if none
  */
 MedVis.prototype.wrangleData= function(_filterFunction){
-    this.displayData = this.referrerData;
+    this.displayReferrerData = this.referrerData;
 
 };
 
@@ -60,73 +63,121 @@ MedVis.prototype.wrangleData= function(_filterFunction){
 MedVis.prototype.updateVis = function() {
     var that = this;
 
-    this.y.domain(d3.extent(this.displayData, function(d) { return d.latitude; }))
+    this.y.domain(d3.extent(this.displayReferrerData, function(d) { return d.latitude; }))
 
-   // this.x.domain(d3.extent(this.displayData, function(d) { return d.longitude; }))
-    this.x.domain([d3.min(this.displayData, function(d) { return d.longitude; }),
-                   d3.max(this.displayData, function(d) { return d.longitude; })])
+   // this.x.domain(d3.extent(this.displayReferrerData, function(d) { return d.longitude; }))
+    this.x.domain([d3.min(this.displayReferrerData, function(d) { return d.longitude; }),
+                   d3.max(this.displayReferrerData, function(d) { return d.longitude; })])
 
-    this.createGraph();
+    // create the referrer and client graphs
+    this.createReferrerGraph();
+    this.createClientGraph();
+    console.log(this.referrerGraph);
+    console.log(this.clientGraph);
 
     // create svg for nodes
-    var node = this.svg.selectAll(".node")
-        .data(this.graph.nodes)
+    var referrerNode = this.svg.selectAll(".referrerNode")
+        .data(this.referrerGraph.nodes)
         .enter()
         .append("g").attr("class", "node");
 
     // create svg for links
-    var link = this.svg.selectAll(".link")
-        .data(this.graph.links);
+    var referrerLink = this.svg.selectAll(".referrerLink")
+        .data(this.referrerGraph.links);
 
-    this.graph.nodes.forEach(function(d, i) {
+    this.referrerGraph.nodes.forEach(function(d, i) {
         d.x =  d.longitude;
         d.y =  d.latitude;
     });
 
     // connect links using lines
-    var lines = link.enter().append("line")
+    var referrerLines = referrerLink.enter().append("line")
         .attr("class", "link")
         .style("stroke", "gray")
         .attr("opacity", 0.1);
 
     // draw circles
-    node.append("circle")
+    referrerNode.append("circle")
         .attr("r", function(d) {
             return d.visit_count * 2;
         })
-        .attr('fill-opacity', 0.1)
+        .attr('fill-opacity', 0.2)
         .on("mouseover", function(d) {
             d3.select(this).attr("fill-opacity", 0.7);
+            console.log(d.city);
         })
         .on('mouseout', function(d){
             d3.select(this).attr("fill-opacity", 0.1);
         });
 
-    link.transition().duration(500)
+    referrerLink.transition().duration(500)
         .attr("x1", function(d) { return that.x(d.target.x); })
         .attr("y1", function(d) { return that.y(d.target.y); })
         .attr("x2", function(d) { return that.x(d.source.x); })
         .attr("y2", function(d) { return that.y(d.source.y); });
 
-    node.transition().duration(500)
+    referrerNode.transition().duration(500)
         .attr("transform", function(d) {
             return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
         });
 
 
-    // client circles go here (in red)
+    // client circles and lines go here (in red)
 
+    var clientNode = this.svg.selectAll(".clientNode")
+        .data(this.clientGraph.nodes)
+        .enter()
+        .append("g").attr("class", "node");
 
+    // create svg for links
+    var clientLink = this.svg.selectAll(".clientLink")
+        .data(this.clientGraph.links);
+
+    this.clientGraph.nodes.forEach(function(d, i) {
+        d.x =  d.longitude;
+        d.y =  d.latitude;
+    });
+
+    // connect links using lines
+    var clientLines = clientLink.enter().append("line")
+        .attr("class", "link")
+       // .style("stroke", "red")
+        .attr("opacity", 0.2);
+
+    // draw circles
+    clientNode.append("circle")
+        .attr("r", function(d) {
+            return d.product_count * 2;
+        })
+        .attr("fill", "red")
+        .attr('fill-opacity', 0.1);
+       /* .on("mouseover", function(d) {
+            d3.select(this).attr("fill-opacity", 0.5);
+        })
+        .on('mouseout', function(d){
+            d3.select(this).attr("fill-opacity", 0.1);
+        });*/
+
+    clientLink.transition().duration(500)
+        .attr("x1", function(d) { return that.x(d.target.x); })
+        .attr("y1", function(d) { return that.y(d.target.y); })
+        .attr("x2", function(d) { return that.x(d.source.x); })
+        .attr("y2", function(d) { return that.y(d.source.y); });
+
+    clientNode.transition().duration(500)
+        .attr("transform", function(d) {
+            return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
+        });
 
 };
 /**
- * create Graph
+ * create referrer Graph
  */
-MedVis.prototype.createGraph = function() {
+MedVis.prototype.createReferrerGraph = function() {
 
     var that = this;
 
-    this.graph.nodes = d3.range(this.displayData.length).map(function (d) {
+    this.referrerGraph.nodes = d3.range(this.displayReferrerData.length).map(function (d) {
         return {
             city: "",
             latitude: 0,
@@ -135,18 +186,63 @@ MedVis.prototype.createGraph = function() {
     });
 
     // store is first node
-    this.graph.nodes[0] = this.storeData[0];
+    this.referrerGraph.nodes[0] = this.storeData[0];
 
-    this.graph.nodes.forEach(function (d, i) {
-
-        if (that.displayData[i].city != "") {
-            that.graph.nodes[i + 1] = that.displayData[i];
+    this.referrerGraph.nodes.forEach(function (d, i) {
+        if (that.displayReferrerData[i].city != "") {
+            that.referrerGraph.nodes[i + 1] = that.displayReferrerData[i];
         }
 
     });
 
-    this.graph.nodes.forEach(function(d, i) {
+    this.referrerGraph.nodes.forEach(function(d, i) {
+        that.referrerGraph.links.push({"source": that.referrerGraph.nodes[0],
+            "target": that.referrerGraph.nodes[i]})
+    });
+};
 
-        that.graph.links.push({"source": that.graph.nodes[0], "target": that.graph.nodes[i]})
+/**
+ * create clients Graph
+ */
+MedVis.prototype.createClientGraph = function() {
+    var that = this;
+
+    this.clientGraph.nodes = d3.range(this.displayPerClientData.length).map(function (d) {
+        return {
+            city: "",
+            latitude: 0,
+            longitude: 0,
+            product_count: 0,
+            referrer_code: ""
+        }
+    });
+
+    this.clientGraph.nodes.forEach(function (d, i) {
+        that.clientGraph.nodes[i] = that.displayPerClientData[i];
+    });
+
+    // keep index 0 out of the game for links... rmemeber index by client_id starts with 1
+    that.clientGraph.links.push({"source": that.clientGraph.nodes[0],
+        "target": that.clientGraph.nodes[0]});
+
+    // create a link to the referrer, atm. to itsself if referrer is walk in etc...
+    this.clientGraph.nodes.forEach(function(d, i) {
+        var searchTerm = d.referrer_code;
+        var index = -1;
+
+        for(var i = 0, len = that.displayReferrerData.length; i < len; i++) {
+            if (that.displayReferrerData[i].referrer_code === searchTerm) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1) {
+            that.clientGraph.links.push({"source": that.clientGraph.nodes[i],
+                "target": that.displayReferrerData[index]})
+        }
+        else {
+            that.clientGraph.links.push({"source": that.clientGraph.nodes[i],
+                "target": that.clientGraph.nodes[i]})
+        }
     });
 };

@@ -17,8 +17,12 @@
     <!-- Get some nice font-->
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
+    <!--Stylesheets-->
     <script src = "js/medvis.js"></script>
 
+
+    <!-- add own stylesheet-->
+    <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
 
@@ -59,7 +63,6 @@
 
                 // referrers 0 - 44, atm. NO Walk ins etc.
                 _referrerData.forEach(function(item) {
-                    //console.log(item);
                     if (item.city != "") {
                         referrerData.push(item);
                     }
@@ -80,6 +83,7 @@
 
                 for (i = 0; i < perClientData.length; i++) {
                     perClientData[i] = {
+                        city: "",
                         product_count: 0,
                         latitude: "",
                         longitude: "",
@@ -90,6 +94,7 @@
 
                 // fill up perClientData
                 _clientData.forEach(function(item) {
+                    perClientData[parseInt(item.client_id)].city = item.city;
                     perClientData[parseInt(item.client_id)].latitude = item.latitude;
                     perClientData[parseInt(item.client_id)].longitude = item.longitude;
                     perClientData[parseInt(item.client_id)].referrer_code = item.referrer_code;
@@ -98,8 +103,6 @@
                                         parseInt(item.product_count);
                     perClientData[parseInt(item.client_id)].visit_dates.push(item.initial_visit_date);
                 });
-
-                console.log(perClientData);
 
                 storeData = _storeData;
 
@@ -133,10 +136,5 @@
 </script>
 
 
-
 </body>
-
-
-
-
 </html>

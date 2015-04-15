@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>2015 Med Challenge</title>
+
+    <!-- ADD Libraries-->
+    <script src="libs/d3/d3.min.js" charset="utf-8"></script>
+    <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/queue.v1.min.js"></script>
+
+
+    <!--Stylesheets-->
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+
+    <!-- Get some nice font-->
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+    <script src = "js/medvis.js"></script>
+
+
+</head>
+
+<body>
+
+<div class="container">
+    <h1>2015 Med Challenge</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-9" id="medVis"></div>
+</div>
+
+<script>
+    $(function(){
+        var cityData = [];
+        var clientData = [];
+        var referrerData = [];
+        var storeData = [];
+
+        var initVis = function(){
+            var MyEventHandler = new Object();
+            // Instantiate vis objects
+
+            medVis = new MedVis(d3.select("#medVis"), cityData, clientData, referrerData, storeData);
+
+            // bind the eventHandler to the Vis Objects
+            $(MyEventHandler).bind("selectionChanged", function(event, type){
+               medVis.onSelectionChange(type);
+            });
+        };
+
+        // call this function after both files are loaded -- error should be "null" if no error
+        var dataLoaded = function (error, _cityData, _clientData, _referrerData, _storeData) {
+            if (!error) {
+                // put data in a good format here
+                referrerData = _referrerData;
+                storeData = _storeData;
+
+            }
+            initVis();
+        };
+
+        var startHere = function(){
+            // load the data
+            queue()
+                    .defer(d3.csv, 'data/citydata.csv')
+                    .defer(d3.csv, 'data/clientdata.csv')
+                    .defer(d3.csv, 'data/referrerdata.csv')
+                    .defer(d3.csv, 'data/storedata.csv')
+                    .await(function(error,cityData, clientdata, referrerdata, storedata) {
+                       dataLoaded(error,cityData, clientdata, referrerdata, storedata);
+                    });
+        };
+
+        startHere();
+
+    });
+
+    /**
+     * Helper function that gets the width of a D3 element
+     */
+    var getInnerWidth = function(element) {
+        var style = window.getComputedStyle(element.node(), null);
+        return parseInt(style.getPropertyValue('width'));
+    }
+</script>
+
+
+
+</body>
+
+
+
+
+</html>

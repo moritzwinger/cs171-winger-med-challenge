@@ -36,6 +36,7 @@
     $(function(){
         var cityData = [];
         var clientData = [];
+        var perClientData = [];
         var referrerData = [];
         var storeData = [];
 
@@ -43,7 +44,7 @@
             var MyEventHandler = new Object();
             // Instantiate vis objects
 
-            medVis = new MedVis(d3.select("#medVis"), cityData, clientData, referrerData, storeData);
+            medVis = new MedVis(d3.select("#medVis"), cityData, clientData, perClientData, referrerData, storeData);
 
             // bind the eventHandler to the Vis Objects
             $(MyEventHandler).bind("selectionChanged", function(event, type){
@@ -55,7 +56,51 @@
         var dataLoaded = function (error, _cityData, _clientData, _referrerData, _storeData) {
             if (!error) {
                 // put data in a good format here
-                referrerData = _referrerData;
+
+                // referrers 0 - 44, atm. NO Walk ins etc.
+                _referrerData.forEach(function(item) {
+                    //console.log(item);
+                    if (item.city != "") {
+                        referrerData.push(item);
+                    }
+                    if (item.referrer_code == "Referrer_40") {
+                        var tmp = parseFloat(item.longitude) - 0.55;
+                        item.longitude = tmp.toString();
+                        //var tmp = parseFloat(item.latitude) +
+                    }
+                    if (item.referrer_code == "Referrer_29" || item.referrer_code == "Referrer_27"
+                                    || item.referrer_code ==  "Referrer_26") {
+                        var tmp = parseFloat(item.longitude)- 0.1;
+                        item.longitude = tmp.toString();
+                    }
+                });
+
+                // client data: indexed by client id, will contain lat/lon/item_count/array of visit dates
+                perClientData = d3.range(0,351);
+
+                for (i = 0; i < perClientData.length; i++) {
+                    perClientData[i] = {
+                        product_count: 0,
+                        latitude: "",
+                        longitude: "",
+                        referrer_code: "",
+                        visit_dates: []
+                    };
+                }
+
+                // fill up perClientData
+                _clientData.forEach(function(item) {
+                    perClientData[parseInt(item.client_id)].latitude = item.latitude;
+                    perClientData[parseInt(item.client_id)].longitude = item.longitude;
+                    perClientData[parseInt(item.client_id)].referrer_code = item.referrer_code;
+                    perClientData[parseInt(item.client_id)].product_count =
+                                        perClientData[parseInt(item.client_id)].product_count +
+                                        parseInt(item.product_count);
+                    perClientData[parseInt(item.client_id)].visit_dates.push(item.initial_visit_date);
+                });
+
+                console.log(perClientData);
+
                 storeData = _storeData;
 
             }

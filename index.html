@@ -35,7 +35,7 @@
 
 <div class="row">
     <div class="col-md-9" id="graphVis"></div>
-    <div class="col-md-3" id="barVis"></div>
+    <div class="col-md-12" id="barVis"></div>
 </div>
 
 <script>
@@ -50,13 +50,15 @@
             var MyEventHandler = new Object();
             // Instantiate vis objects
 
-            graphVis = new GraphVis(d3.select("#graphVis"), cityData, clientData, perClientData, referrerData, storeData);
-            barVis = new BarVis(d3.select("#graphVis"), referrerData);
+            graphVis = new GraphVis(d3.select("#graphVis"), cityData, clientData,
+                                            perClientData, referrerData, storeData, MyEventHandler);
+            barVis = new BarVis(d3.select("#barVis"), referrerData, MyEventHandler);
 
 
             // bind the eventHandler to the Vis Objects
             $(MyEventHandler).bind("selectionChanged", function(event, type){
-               graphVis.onSelectionChange(type);
+                graphVis.onSelectionChange(type);
+                barVis.onSelectionChange(type);
             });
         };
 
@@ -65,7 +67,7 @@
             if (!error) {
                 // put data in a good format here
 
-                // referrers 0 - 44, walkins, etc 55-49
+                // referrers 0 - 44, walkins, etc 45-50
                 _referrerData.forEach(function(item) {
                     if (item.city != "") {
                         referrerData.push(item);
@@ -82,12 +84,17 @@
                     }
                 });
 
-                // push WALK_IN, OTHER_CLIENTS, REHAB, LOYAL, MEDIA to the end (indices 45-49)
+                // push WALK_IN, OTHER_CLIENTS, REHAB, LOYAL, MEDIA, FLYER to the end (indices 45-50)
                 for (i = 0; i < 5; i++) {
                     referrerData.push(_referrerData[i]);
                     referrerData[45 + i].latitude = "43.5";
                     referrerData[45 + i].longitude = "-79.5";
                 }
+
+                // FLYER
+                referrerData.push(_referrerData[28]);
+                referrerData[50].latitude = "43.5";
+                referrerData[50].longitude = "-79.5";
 
                 // client data: indexed by client id, will contain lat/lon/item_count/array of visit dates, city
                 perClientData = d3.range(0,351);

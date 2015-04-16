@@ -3,8 +3,18 @@ h1{
     font-family:Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight:100;
 }
-.axis{
-    font-size:24px;
+.axis text{
+    font-size:12px;
     font-family:Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight:100;
+}
+text{
+    font-family:Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-weight:100;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: none;
+    shape-rendering: crispEdges;
 }

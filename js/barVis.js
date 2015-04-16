@@ -19,16 +19,16 @@
  * @param _metaData -- the meta-data / data description object
  * @constructor
  */
-BarVis = function(_parentElement, _data){
+BarVis = function(_parentElement, _data, _eventHandler){
     this.parentElement = _parentElement;
     this.data = _data;
     this.displayData = _data;
-    this.allData = [];
+    this.eventHandler = _eventHandler;
 
     // define all constants here
-    this.margin = {top: 20, right: 0, bottom: 30, left: 90},
+    this.margin = {top: 20, right: 0, bottom: 50, left: 90},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
-        this.height = 400 - this.margin.top - this.margin.bottom;
+        this.height = 200 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 
@@ -55,17 +55,18 @@ BarVis.prototype.initVis = function(){
         .range([0, this.width]);
 
     this.y = d3.scale.linear()
-        .range([0, this.height]);
+        .range([this.height - that.margin.top  - 35, 0]);
 
     this.xAxis = d3.svg.axis()
-        .scale(this.x)
+        .scale(this.x);
+
 
     this.yAxis = d3.svg.axis()
         .scale(this.y)
-        .orient("left")
+        .ticks(5)
+        .orient("left");
 
     // Add axes visual elements
-
     this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
 
@@ -74,6 +75,7 @@ BarVis.prototype.initVis = function(){
         .attr("class", "y axis")
         .append("text")
         .attr("transform", "rotate(-90)")
+        .style("font-size", "24px")
         .attr("y", -60)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
@@ -95,37 +97,19 @@ BarVis.prototype.initVis = function(){
  * Method to wrangle the data. In this case it takes an options object
  * @param _filterFunction - a function that filters data or "null" if none
  */
-BarVis.prototype.wrangleData= function(_filterFunction){
-
-    this.allData = this.filterAndAggregate(null);
-    // displayData should hold the data which is visualized
-    this.displayData = this.filterAndAggregate(_filterFunction);
-
-    //// you might be able to pass some options,
-    //// if you don't pass options -- set the default options
-    //// the default is: var options = {filter: function(){return true;} }
-    //var options = _options || {filter: function(){return true;}};
-}
+BarVis.prototype.wrangleData= function(){
+    this.displayData = this.displayData;
+};
 
 
 
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
-BarVis.prototype.updateVis = function(_timeRange) {
-
-
-
-    // this.timeRange = _timeRange;
-    if (_timeRange == null) {
-        this.currentTimeRange = this.totalTimeRange;
-    }
-    else {
-        this.currentTimeRange = _timeRange;
-    }
-
+BarVis.prototype.updateVis = function() {
     //...update graphs
-    this.y.domain(d3.extent(this.displayData, function(d) { return d; })).range([0, this.height]);
+    this.y.domain(d3.extent(this.displayData, function(d) { return d.visit_count; }));
+    this.x.domain([0,100]);
 
     var that = this;
 
@@ -136,14 +120,24 @@ BarVis.prototype.updateVis = function(_timeRange) {
     var bar_enter = bar.enter().append("g");
 
     // Append a rect and a text only for the Enter set (new g)
-    bar_enter.append("rect");
+    bar_enter.append("rect")
+        .on("mouseover", function(d) {
+            d3.select(this).attr("fill-opacity", 0.7);
+            $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).attr("fill-opacity", 0.2);
+            $(that.eventHandler).trigger("selectionChanged", null);
+        });
 
     // Add attributes (position) to all bars
     bar
         .attr("class", "bar")
         .transition()
         .attr("transform", "translate("+ this.margin.left + ", " + this.margin.top + ")")
-        .attr("transform", function(d, i) { return "translate(" + i * 40  + ", 0)"; });
+        .attr("transform", function(d, i) {
+            return "translate(" + i * 12  + "," + 0 + ")";
+        });
 
     // Remove the extra bars
     bar.exit()
@@ -152,47 +146,31 @@ BarVis.prototype.updateVis = function(_timeRange) {
     // Update all inner rects and texts (both update and enter sets)
     bar.selectAll("rect")
         .transition()
-        .attr("width", 30)
+        .attr("width", 10)
+        .attr('fill-opacity', 0.2)
         .attr("height",function(d) {
-            var index = that.allData.indexOf(d);
-            return (that.y(that.displayData[index]) + that.margin.top);
+            return d.visit_count;
         })
         .attr("x", function(d,i) {
             return that.margin.left;
         })
         .attr("y", function(d) {
-            var index = that.allData.indexOf(d);
-            return 0;//(that.height - that.y(that.displayData[index]) - that.margin.top);
-        })
-        .style("fill", function(d, i) {
-            var index = that.allData.indexOf(d);
-            var totalDays = (that.totalTimeRange.selectionEnd - that.totalTimeRange.selectionStart)
-                / (60*60*24);
-            var currentDays = (that.currentTimeRange.selectionEnd - that.currentTimeRange.selectionStart)
-                / (60*60*24);
-            if (that.displayData[index] / currentDays > that.allData[index] / totalDays) {
-                return "green";
-            } else if (that.displayData[index] / currentDays == that.allData[index] / totalDays) {
-                return "black"
-            } else return "red";
+           // var index = that.allData.indexOf(d);
+            return that.height - d.visit_count - 35;
         });
 
     bar.append("text")
         .text(function(d,i) {
-            return that.metaData.choices[i+100];
+            return that.displayData[i].referrer_code;
         })
         .attr("x", 0)
         .attr("transform", function(d, i) {
-            var temp =  that.margin.left + 17;
-            var height = that.height + that.margin.top - 5;
+            var temp =  that.margin.left;
+            var height = that.height + that.margin.top - 50 ;
             return "translate(" + temp   + "," +
-                height +")" + "rotate(-90)"})
+                height +")" + "rotate(-270)"})
         .attr("fill", "#BDBBB5")
         .attr("shape-rendering", "crispEdges")
-
-    // updates axis
-    this.svg.select(".x.axis")
-        .call(this.xAxis)
 
     this.svg.selectAll(".y.axis")
         .call(this.yAxis)

@@ -15,6 +15,8 @@ GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _ref
     this.referrerGraph = {nodes: [], links: []};
     this.clientGraph = {nodes: [], links: []};
 
+   // this.referrerNode;
+
     // define all constants here
     this.margin = {top: 20, right: 30, bottom: 170, left: 20},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
@@ -77,7 +79,7 @@ GraphVis.prototype.updateVis = function() {
 
     // client circles and lines go here (in red)
 
-    var clientNode = this.svg.selectAll(".clientNode")
+    this.clientNode = this.svg.selectAll(".clientNode")
         .data(this.clientGraph.nodes)
         .enter()
         .append("g").attr("class", "node");
@@ -96,18 +98,13 @@ GraphVis.prototype.updateVis = function() {
         .attr("class", "link")
 
     // draw circles
-    clientNode.append("circle")
+    this.clientNode.append("circle")
         .attr("r", function(d) {
             return d.product_count * 2;
         })
         .attr("fill", "red")
         .attr('fill-opacity', 0.1);
-    /* .on("mouseover", function(d) {
-     d3.select(this).attr("fill-opacity", 0.5);
-     })
-     .on('mouseout', function(d){
-     d3.select(this).attr("fill-opacity", 0.1);
-     });*/
+
 
     clientLink.transition().duration(500)
         .attr("x1", function(d) { return that.x(d.target.longitude); })
@@ -115,14 +112,14 @@ GraphVis.prototype.updateVis = function() {
         .attr("x2", function(d) { return that.x(d.source.x); })
         .attr("y2", function(d) { return that.y(d.source.y); });
 
-    clientNode.transition().duration(500)
+    this.clientNode.transition().duration(500)
         .attr("transform", function(d) {
             return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
         });
 
 
     // create svg for nodes
-    var referrerNode = this.svg.selectAll(".referrerNode")
+    this.referrerNode = this.svg.selectAll(".referrerNode")
         .data(this.referrerGraph.nodes)
         .enter()
         .append("g").attr("class", "node");
@@ -143,7 +140,7 @@ GraphVis.prototype.updateVis = function() {
         .attr("opacity", 0.2);
 
     // draw circles
-    referrerNode.append("circle")
+    this.referrerNode.append("circle")
         .attr("r", function(d) {
             return d.visit_count * 1.5;
         })
@@ -151,7 +148,7 @@ GraphVis.prototype.updateVis = function() {
         .on("mouseover", function(d) {
             d3.select(this).attr("fill-opacity", 0.7);
             // highlight client circles if they are related to the source
-            clientNode.each(function(item) {
+            that.clientNode.each(function(item) {
                 if (d.referrer_code == item.referrer_code) {
                     d3.select(this).selectAll("circle")
                         .attr('fill-opacity', 0.9);
@@ -160,7 +157,7 @@ GraphVis.prototype.updateVis = function() {
         })
         .on('mouseout', function(d){
             d3.select(this).attr("fill-opacity", 0.1);
-            clientNode.each(function() {
+            that.clientNode.each(function() {
                     d3.select(this).selectAll("circle")
                         .attr('fill-opacity', 0.1);
 
@@ -173,7 +170,7 @@ GraphVis.prototype.updateVis = function() {
         .attr("x2", function(d) { return that.x(d.source.x); })
         .attr("y2", function(d) { return that.y(d.source.y); });
 
-    referrerNode.transition().duration(500)
+    this.referrerNode.transition().duration(500)
         .attr("transform", function(d) {
             return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
         });
@@ -262,4 +259,41 @@ GraphVis.prototype.createClientGraph = function() {
                 "target": that.clientGraph.nodes[i]})
         }
     });
+};
+
+/**
+ * Gets called by event handler
+ *
+ */
+GraphVis.prototype.onSelectionChange= function (referrer_code){
+
+    var that = this;
+
+    if (referrer_code != null) {
+       // this.svg.selectAll("circle").data().forEach(function(item) {
+        this.referrerNode.each(function(d) {
+            if (d.referrer_code == referrer_code) {
+                d3.select(this).selectAll("circle")
+                    .attr('fill-opacity', 0.7);
+            }
+            that.clientNode.each(function(item) {
+                if (referrer_code == item.referrer_code) {
+                    d3.select(this).selectAll("circle")
+                        .attr('fill-opacity', 0.9);
+                }
+            });
+        })
+    } else {
+        this.referrerNode.each(function() {
+            d3.select(this).selectAll("circle")
+                .attr('fill-opacity', 0.1);
+        });
+        that.clientNode.each(function(item) {
+                d3.select(this).selectAll("circle")
+                    .attr('fill-opacity', 0.1);
+        });
+    }
+
+
+
 };

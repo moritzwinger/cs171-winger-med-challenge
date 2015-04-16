@@ -1,9 +1,11 @@
 /**
- * MedVis
+ * GraphVis
+ *
+ * creates the graph visualization
  */
 
 
-MedVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData){
+GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData){
     this.parentElement = _parentElement;
     this.referrerData = _referrerData;
     this.storeData = _storeData;
@@ -14,7 +16,7 @@ MedVis = function(_parentElement, _cityData, _clientData, _perClientData, _refer
     this.clientGraph = {nodes: [], links: []};
 
     // define all constants here
-    this.margin = {top: 20, right: 0, bottom: 30, left: 20},
+    this.margin = {top: 20, right: 30, bottom: 170, left: 20},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
         this.height = 600 - this.margin.top - this.margin.bottom;
 
@@ -25,7 +27,7 @@ MedVis = function(_parentElement, _cityData, _clientData, _perClientData, _refer
 /**
  * Method that sets up the SVG and the variables
  */
-MedVis.prototype.initVis = function(){
+GraphVis.prototype.initVis = function(){
     var that = this;
     this.svg = this.parentElement.append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
@@ -52,7 +54,7 @@ MedVis.prototype.initVis = function(){
  * Method to wrangle the data. In this case it takes an options object
  * @param _filterFunction - a function that filters data or "null" if none
  */
-MedVis.prototype.wrangleData= function(_filterFunction){
+GraphVis.prototype.wrangleData= function(){
     this.displayReferrerData = this.referrerData;
 
 };
@@ -60,67 +62,18 @@ MedVis.prototype.wrangleData= function(_filterFunction){
 /**
  * the drawing function
  */
-MedVis.prototype.updateVis = function() {
+GraphVis.prototype.updateVis = function() {
     var that = this;
 
     this.y.domain(d3.extent(this.displayReferrerData, function(d) { return d.latitude; }))
 
-   // this.x.domain(d3.extent(this.displayReferrerData, function(d) { return d.longitude; }))
+    // this.x.domain(d3.extent(this.displayReferrerData, function(d) { return d.longitude; }))
     this.x.domain([d3.min(this.displayReferrerData, function(d) { return d.longitude; }),
-                   d3.max(this.displayReferrerData, function(d) { return d.longitude; })])
+        d3.max(this.displayReferrerData, function(d) { return d.longitude; })])
 
     // create the referrer and client graphs
     this.createReferrerGraph();
     this.createClientGraph();
-    console.log(this.referrerGraph);
-    console.log(this.clientGraph);
-
-    // create svg for nodes
-    var referrerNode = this.svg.selectAll(".referrerNode")
-        .data(this.referrerGraph.nodes)
-        .enter()
-        .append("g").attr("class", "node");
-
-    // create svg for links
-    var referrerLink = this.svg.selectAll(".referrerLink")
-        .data(this.referrerGraph.links);
-
-    this.referrerGraph.nodes.forEach(function(d, i) {
-        d.x =  d.longitude;
-        d.y =  d.latitude;
-    });
-
-    // connect links using lines
-    var referrerLines = referrerLink.enter().append("line")
-        .attr("class", "link")
-        .style("stroke", "gray")
-        .attr("opacity", 0.1);
-
-    // draw circles
-    referrerNode.append("circle")
-        .attr("r", function(d) {
-            return d.visit_count * 2;
-        })
-        .attr('fill-opacity', 0.2)
-        .on("mouseover", function(d) {
-            d3.select(this).attr("fill-opacity", 0.7);
-            console.log(d.city);
-        })
-        .on('mouseout', function(d){
-            d3.select(this).attr("fill-opacity", 0.1);
-        });
-
-    referrerLink.transition().duration(500)
-        .attr("x1", function(d) { return that.x(d.target.x); })
-        .attr("y1", function(d) { return that.y(d.target.y); })
-        .attr("x2", function(d) { return that.x(d.source.x); })
-        .attr("y2", function(d) { return that.y(d.source.y); });
-
-    referrerNode.transition().duration(500)
-        .attr("transform", function(d) {
-            return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
-        });
-
 
     // client circles and lines go here (in red)
 
@@ -141,8 +94,6 @@ MedVis.prototype.updateVis = function() {
     // connect links using lines
     var clientLines = clientLink.enter().append("line")
         .attr("class", "link")
-       // .style("stroke", "red")
-        .attr("opacity", 0.2);
 
     // draw circles
     clientNode.append("circle")
@@ -151,16 +102,16 @@ MedVis.prototype.updateVis = function() {
         })
         .attr("fill", "red")
         .attr('fill-opacity', 0.1);
-       /* .on("mouseover", function(d) {
-            d3.select(this).attr("fill-opacity", 0.5);
-        })
-        .on('mouseout', function(d){
-            d3.select(this).attr("fill-opacity", 0.1);
-        });*/
+    /* .on("mouseover", function(d) {
+     d3.select(this).attr("fill-opacity", 0.5);
+     })
+     .on('mouseout', function(d){
+     d3.select(this).attr("fill-opacity", 0.1);
+     });*/
 
     clientLink.transition().duration(500)
-        .attr("x1", function(d) { return that.x(d.target.x); })
-        .attr("y1", function(d) { return that.y(d.target.y); })
+        .attr("x1", function(d) { return that.x(d.target.longitude); })
+        .attr("y1", function(d) { return that.y(d.target.latitude); })
         .attr("x2", function(d) { return that.x(d.source.x); })
         .attr("y2", function(d) { return that.y(d.source.y); });
 
@@ -169,11 +120,72 @@ MedVis.prototype.updateVis = function() {
             return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
         });
 
+
+    // create svg for nodes
+    var referrerNode = this.svg.selectAll(".referrerNode")
+        .data(this.referrerGraph.nodes)
+        .enter()
+        .append("g").attr("class", "node");
+
+    // create svg for links
+    var referrerLink = this.svg.selectAll(".referrerLink")
+        .data(this.referrerGraph.links);
+
+    this.referrerGraph.nodes.forEach(function(d, i) {
+        d.x =  d.longitude;
+        d.y =  d.latitude;
+    });
+
+    // connect links using lines
+    var referrerLines = referrerLink.enter().append("line")
+        .attr("class", "link")
+        .style("stroke", "gray")
+        .attr("opacity", 0.2);
+
+    // draw circles
+    referrerNode.append("circle")
+        .attr("r", function(d) {
+            return d.visit_count * 1.5;
+        })
+        .attr('fill-opacity', 0.2)
+        .on("mouseover", function(d) {
+            d3.select(this).attr("fill-opacity", 0.7);
+            // highlight client circles if they are related to the source
+            clientNode.each(function(item) {
+                if (d.referrer_code == item.referrer_code) {
+                    d3.select(this).selectAll("circle")
+                        .attr('fill-opacity', 0.9);
+                }
+            });
+        })
+        .on('mouseout', function(d){
+            d3.select(this).attr("fill-opacity", 0.1);
+            clientNode.each(function() {
+                    d3.select(this).selectAll("circle")
+                        .attr('fill-opacity', 0.1);
+
+            });
+        });
+
+    referrerLink.transition().duration(500)
+        .attr("x1", function(d) { return that.x(d.target.x); })
+        .attr("y1", function(d) { return that.y(d.target.y); })
+        .attr("x2", function(d) { return that.x(d.source.x); })
+        .attr("y2", function(d) { return that.y(d.source.y); });
+
+    referrerNode.transition().duration(500)
+        .attr("transform", function(d) {
+            return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
+        });
+
+
+
+
 };
 /**
  * create referrer Graph
  */
-MedVis.prototype.createReferrerGraph = function() {
+GraphVis.prototype.createReferrerGraph = function() {
 
     var that = this;
 
@@ -189,22 +201,25 @@ MedVis.prototype.createReferrerGraph = function() {
     this.referrerGraph.nodes[0] = this.storeData[0];
 
     this.referrerGraph.nodes.forEach(function (d, i) {
-        if (that.displayReferrerData[i].city != "") {
             that.referrerGraph.nodes[i + 1] = that.displayReferrerData[i];
-        }
-
     });
 
     this.referrerGraph.nodes.forEach(function(d, i) {
-        that.referrerGraph.links.push({"source": that.referrerGraph.nodes[0],
-            "target": that.referrerGraph.nodes[i]})
+        // no link to store if Walk IN etc.
+        if (i > 44) {
+            that.referrerGraph.links.push({"source": that.referrerGraph.nodes[i],
+                "target": that.referrerGraph.nodes[i]});
+        } else {
+            that.referrerGraph.links.push({"source": that.referrerGraph.nodes[0],
+                "target": that.referrerGraph.nodes[i]});
+        }
     });
 };
 
 /**
  * create clients Graph
  */
-MedVis.prototype.createClientGraph = function() {
+GraphVis.prototype.createClientGraph = function() {
     var that = this;
 
     this.clientGraph.nodes = d3.range(this.displayPerClientData.length).map(function (d) {
@@ -217,6 +232,7 @@ MedVis.prototype.createClientGraph = function() {
         }
     });
 
+    // fill up nodes from 1 to 351
     this.clientGraph.nodes.forEach(function (d, i) {
         that.clientGraph.nodes[i] = that.displayPerClientData[i];
     });
@@ -236,6 +252,7 @@ MedVis.prototype.createClientGraph = function() {
                 break;
             }
         }
+
         if (index != -1) {
             that.clientGraph.links.push({"source": that.clientGraph.nodes[i],
                 "target": that.displayReferrerData[index]})

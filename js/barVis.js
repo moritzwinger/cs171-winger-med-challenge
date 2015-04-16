@@ -117,10 +117,10 @@ BarVis.prototype.updateVis = function() {
         .data(this.displayData);
 
     // Append new bar groups, if required
-    var bar_enter = bar.enter().append("g");
+    this.bar_enter = bar.enter().append("g");
 
     // Append a rect and a text only for the Enter set (new g)
-    bar_enter.append("rect")
+    this.bar_enter.append("rect")
         .on("mouseover", function(d) {
             d3.select(this).attr("fill-opacity", 0.7);
             $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
@@ -171,6 +171,14 @@ BarVis.prototype.updateVis = function() {
                 height +")" + "rotate(-270)"})
         .attr("fill", "#BDBBB5")
         .attr("shape-rendering", "crispEdges")
+        .on("mouseover", function(d) {
+            d3.select(this).attr("fill", "black");
+            $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).attr("fill", "#BDBBB5");
+            $(that.eventHandler).trigger("selectionChanged", null);
+        });
 
     this.svg.selectAll(".y.axis")
         .call(this.yAxis)
@@ -186,10 +194,26 @@ BarVis.prototype.updateVis = function() {
  * be defined here.
  * @param selection
  */
-BarVis.prototype.onSelectionChange= function (){
-
-  
-}
+BarVis.prototype.onSelectionChange= function (_referrer_code){
+    if (_referrer_code != null) {
+        this.bar_enter.each(function(d) {
+            if (d.referrer_code == _referrer_code) {
+                d3.select(this).selectAll("rect")
+                    .attr('fill-opacity', 0.7);
+                d3.select(this).selectAll("text")
+                    .attr("fill", "black")
+            }
+        });
+    } else {
+        this.bar_enter.each(function(d) {
+            d3.select(this).selectAll("rect")
+                .attr('fill-opacity', 0.2);
+            d3.select(this).selectAll("text")
+                .attr("fill", "#BDBBB5")
+        });
+    }
+    
+};
 
 
 

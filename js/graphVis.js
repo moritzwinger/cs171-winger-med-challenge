@@ -5,12 +5,13 @@
  */
 
 
-GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData){
+GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData, _eventHandler){
     this.parentElement = _parentElement;
     this.referrerData = _referrerData;
     this.storeData = _storeData;
     this.displayReferrerData = [];
     this.displayPerClientData= _perClientData;
+    this.eventHandler = _eventHandler;
 
     this.referrerGraph = {nodes: [], links: []};
     this.clientGraph = {nodes: [], links: []};
@@ -147,6 +148,7 @@ GraphVis.prototype.updateVis = function() {
         .attr('fill-opacity', 0.2)
         .on("mouseover", function(d) {
             d3.select(this).attr("fill-opacity", 0.7);
+            $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
             // highlight client circles if they are related to the source
             that.clientNode.each(function(item) {
                 if (d.referrer_code == item.referrer_code) {
@@ -157,6 +159,7 @@ GraphVis.prototype.updateVis = function() {
         })
         .on('mouseout', function(d){
             d3.select(this).attr("fill-opacity", 0.1);
+            $(that.eventHandler).trigger("selectionChanged", null);
             that.clientNode.each(function() {
                     d3.select(this).selectAll("circle")
                         .attr('fill-opacity', 0.1);
@@ -265,19 +268,19 @@ GraphVis.prototype.createClientGraph = function() {
  * Gets called by event handler
  *
  */
-GraphVis.prototype.onSelectionChange= function (referrer_code){
+GraphVis.prototype.onSelectionChange= function (_referrer_code){
 
     var that = this;
 
-    if (referrer_code != null) {
+    if (_referrer_code != null) {
        // this.svg.selectAll("circle").data().forEach(function(item) {
         this.referrerNode.each(function(d) {
-            if (d.referrer_code == referrer_code) {
+            if (d.referrer_code == _referrer_code) {
                 d3.select(this).selectAll("circle")
                     .attr('fill-opacity', 0.7);
             }
             that.clientNode.each(function(item) {
-                if (referrer_code == item.referrer_code) {
+                if (_referrer_code == item.referrer_code) {
                     d3.select(this).selectAll("circle")
                         .attr('fill-opacity', 0.9);
                 }
@@ -293,7 +296,4 @@ GraphVis.prototype.onSelectionChange= function (referrer_code){
                     .attr('fill-opacity', 0.1);
         });
     }
-
-
-
 };

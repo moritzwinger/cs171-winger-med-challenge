@@ -186,12 +186,9 @@ BarVis.prototype.updateVis = function() {
  * be defined here.
  * @param selection
  */
-BarVis.prototype.onSelectionChange= function (timeRange){
+BarVis.prototype.onSelectionChange= function (){
 
-    // call wrangle function
-    this.wrangleData(timeRange);
-
-    this.updateVis(timeRange);
+  
 }
 
 

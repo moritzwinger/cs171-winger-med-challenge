@@ -101,61 +101,6 @@ GraphVis.prototype.updateVis = function() {
     this.createReferrerGraph();
     this.createClientGraph();
 
-    // client circles and lines go here (in red)
-    this.clientNode = this.svg.selectAll(".clientNode")
-        .data(this.clientGraph.nodes)
-        .enter()
-        .append("g").attr("class", "node");
-
-    // create svg for links
-    var clientLink = this.svg.selectAll(".clientLink")
-        .data(this.clientGraph.links);
-
-    this.clientGraph.nodes.forEach(function(d, i) {
-        d.x =  d.longitude;
-        d.y =  d.latitude;
-    });
-
-    // connect links using lines
-    var clientLines = clientLink.enter().append("line")
-        .attr("class", "link")
-
-
-    // draw circles
-    this.clientNode.append("circle")
-        .attr("r", function(d) {
-            return d.product_count * 2;
-        })
-        .attr("fill", "red")
-        .attr('fill-opacity', 0.1)
-        .on("mouseover", function(d) {
-            that.cityLabels.each(function(item) {
-                if (d.city == item.city) {
-                    d3.select(this).selectAll("text")
-                        .attr('fill-opacity', 0.9);
-                }
-            });
-        })
-        .on('mouseout', function(d){
-        d3.select(this).attr("fill-opacity", 0.1);
-        that.cityLabels.each(function() {
-            d3.select(this).selectAll("text")
-                .attr('fill-opacity', 0.4);
-
-        });
-    });
-
-
-    clientLink.transition().duration(500)
-        .attr("x1", function(d) { return that.x(d.target.longitude); })
-        .attr("y1", function(d) { return that.y(d.target.latitude); })
-        .attr("x2", function(d) { return that.x(d.source.x); })
-        .attr("y2", function(d) { return that.y(d.source.y); });
-
-    this.clientNode.transition().duration(500)
-        .attr("transform", function(d) {
-            return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
-        });
 
 
     // create svg for nodes
@@ -186,7 +131,6 @@ GraphVis.prototype.updateVis = function() {
         })
         .attr('fill-opacity', 0.2)
         .on("mouseover", function(d) {
-            console.log(d.city, d.latitude, d.longitude);
             d3.select(this).attr("fill-opacity", 0.7);
             $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
             // highlight client circles if they are related to the source
@@ -196,6 +140,7 @@ GraphVis.prototype.updateVis = function() {
                         .attr('fill-opacity', 0.9);
                 }
             });
+            // highlight city name of where referrer is located
             that.cityLabels.each(function(item) {
                 if (d.city == item.city) {
                     d3.select(this).selectAll("text")
@@ -229,6 +174,66 @@ GraphVis.prototype.updateVis = function() {
             return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
         });
 
+    // client circles and lines go here (in red)
+    this.clientNode = this.svg.selectAll(".clientNode")
+        .data(this.clientGraph.nodes)
+        .enter()
+        .append("g").attr("class", "node");
+
+    // create svg for links
+    var clientLink = this.svg.selectAll(".clientLink")
+        .data(this.clientGraph.links);
+
+    this.clientGraph.nodes.forEach(function(d, i) {
+        d.x =  d.longitude;
+        d.y =  d.latitude;
+    });
+
+    // connect links using lines
+    var clientLines = clientLink.enter().append("line")
+        .attr("class", "link")
+
+
+    // draw circles
+    this.clientNode.append("circle")
+        .attr("r", function(d) {
+            return d.product_count * 2;
+        })
+        .attr("fill", "red")
+        .attr('fill-opacity', 0.1)
+        .on("mouseover", function(d) {
+            // highlight client
+            d3.select(this).attr("fill-opacity", 0.7);
+            // highlight city name of where client is located
+            that.cityLabels.each(function(item) {
+                if (d.city == item.city) {
+                    d3.select(this).selectAll("text")
+                        .attr('fill-opacity', 0.9);
+                }
+            });
+            $(that.eventHandler).trigger("selectionChanged", d.referrer_code)
+        })
+        .on('mouseout', function(d){
+            d3.select(this).attr("fill-opacity", 0.1);
+            that.cityLabels.each(function() {
+                d3.select(this).selectAll("text")
+                    .attr('fill-opacity', 0.4);
+                $(that.eventHandler).trigger("selectionChanged", null)
+
+            });
+        });
+
+
+    clientLink.transition().duration(500)
+        .attr("x1", function(d) { return that.x(d.target.longitude); })
+        .attr("y1", function(d) { return that.y(d.target.latitude); })
+        .attr("x2", function(d) { return that.x(d.source.x); })
+        .attr("y2", function(d) { return that.y(d.source.y); });
+
+    this.clientNode.transition().duration(500)
+        .attr("transform", function(d) {
+            return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
+        });
 
 
 

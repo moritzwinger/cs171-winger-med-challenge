@@ -169,8 +169,8 @@
       <file leaf-file-name="graphVis.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/graphVis.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.96681416" vertical-offset="2381" max-vertical-offset="5340">
-              <caret line="217" column="15" selection-start-line="217" selection-start-column="15" selection-end-line="217" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.5685841" vertical-offset="2666" max-vertical-offset="5415">
+              <caret line="212" column="15" selection-start-line="212" selection-start-column="15" selection-end-line="212" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -509,8 +509,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/graphVis.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.96681416" vertical-offset="2381" max-vertical-offset="5340">
-          <caret line="217" column="15" selection-start-line="217" selection-start-column="15" selection-end-line="217" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.5685841" vertical-offset="2666" max-vertical-offset="5415">
+          <caret line="212" column="15" selection-start-line="212" selection-start-column="15" selection-end-line="212" selection-end-column="15" />
           <folding />
         </state>
       </provider>

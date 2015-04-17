@@ -129,8 +129,21 @@ GraphVis.prototype.updateVis = function() {
         .attr("fill", "red")
         .attr('fill-opacity', 0.1)
         .on("mouseover", function(d) {
-          console.log(d.city, d.latitude, d.longitude);
+            that.cityLabels.each(function(item) {
+                if (d.city == item.city) {
+                    d3.select(this).selectAll("text")
+                        .attr('fill-opacity', 0.9);
+                }
+            });
+        })
+        .on('mouseout', function(d){
+        d3.select(this).attr("fill-opacity", 0.1);
+        that.cityLabels.each(function() {
+            d3.select(this).selectAll("text")
+                .attr('fill-opacity', 0.4);
+
         });
+    });
 
 
     clientLink.transition().duration(500)
@@ -183,6 +196,12 @@ GraphVis.prototype.updateVis = function() {
                         .attr('fill-opacity', 0.9);
                 }
             });
+            that.cityLabels.each(function(item) {
+                if (d.city == item.city) {
+                    d3.select(this).selectAll("text")
+                        .attr('fill-opacity', 0.9);
+                }
+            });
         })
         .on('mouseout', function(d){
             d3.select(this).attr("fill-opacity", 0.1);
@@ -190,6 +209,11 @@ GraphVis.prototype.updateVis = function() {
             that.clientNode.each(function() {
                     d3.select(this).selectAll("circle")
                         .attr('fill-opacity', 0.1);
+
+            });
+            that.cityLabels.each(function() {
+                d3.select(this).selectAll("text")
+                    .attr('fill-opacity', 0.4);
 
             });
         });

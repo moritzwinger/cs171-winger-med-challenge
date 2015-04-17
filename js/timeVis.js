@@ -27,9 +27,9 @@ TimeVis = function(_parentElement, _referrerData, _perClientData, _clientData, _
     this.displayData = [];
 
     // define all "constants" here
-    this.margin = {top: 20, right: 0, bottom: 30, left: 30},
+    this.margin = {top: 20, right: 0, bottom: 50, left: 60},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
-        this.height = 400 - this.margin.top - this.margin.bottom;
+        this.height = 200 - this.margin.top - this.margin.bottom;
 
     this.initVis();
 }
@@ -62,29 +62,38 @@ TimeVis.prototype.initVis = function(){
 
     this.yAxis = d3.svg.axis()
         .scale(this.y)
-        .orient("left")
+        .ticks(5)
+        .orient("left");
 
     // Add axes visual elements
     this.svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + this.height + ")")
+        .style("font-size", "24px")
+        .attr('fill-opacity', 0.4);
 
     this.svg.append("g")
         .attr("class", "y axis")
+        .style("fill-opacity", 0.4)
         .append("text")
         .attr("transform", "rotate(-90)")
+        .style("font-size", "24px")
         .attr("y", -60)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Purchased Articles");
+        .attr('fill-opacity', 0.4)
+        .text("Product Count");
 
 
     // modify this to append an svg element, not modify the current placeholder SVG element
     this.svg = this.parentElement.select("svg");
 
-    // filter, aggregate, modify data
-    this.wrangleData();
+    var referrer_code = null;
 
+    // filter, aggregate, modify data
+    this.wrangleData(referrer_code);
+
+    console.log(this.displayData);
     // call the update method
     this.updateVis();
 }
@@ -94,10 +103,15 @@ TimeVis.prototype.initVis = function(){
 /**
  * Method to wrangle the data. In this case it takes an options object
  */
-TimeVis.prototype.wrangleData= function(){
+TimeVis.prototype.wrangleData= function(_referrer_code){
     // displayData should hold the data which is visualized
     // pretty simple in this case -- no modifications needed
-    this.displayData = this.perClientData;
+    if (_referrer_code == null) {
+        this.displayData = this.perClientData;
+    } else {
+        console.log("yew");
+    }
+
 }
 
 /**
@@ -108,10 +122,12 @@ TimeVis.prototype.updateVis = function(){
 
     // update graphs (D3: update, enter, exit)
     // updates scales
-    console.log(this.displayData);
 
-    this.x.domain(d3.extent(this.displayData, function(d) { return d.time; }));
-    this.y.domain(d3.extent(this.displayData, function(d) { return d.product_count; }));
+    var firstVisit = new Date(2012,0,11);
+    var lastVisit = new Date(2014,10,29);
+
+    this.x.domain([firstVisit, lastVisit]);
+    this.y.domain([0,5]);
 
     // updates graph
     var path = this.svg.selectAll(".circle")
@@ -121,9 +137,6 @@ TimeVis.prototype.updateVis = function(){
         .append("circle")
         .attr("r", 5)
         .attr("transform", "translate("+ this.margin.left + ", " + this.margin.top + ")");
-
-    path.transition()
-        .attr("d", this.area);
 
     path.exit()
         .remove();
@@ -143,8 +156,8 @@ TimeVis.prototype.updateVis = function(){
  * be defined here.
  * @param selection
  */
-TimeVis.prototype.onSelectionChange= function (){
-
+TimeVis.prototype.onSelectionChange= function (_referrer_code){
+    this.wrangleData(_referrer_code);
 };
 
 

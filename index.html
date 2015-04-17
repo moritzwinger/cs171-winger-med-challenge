@@ -41,7 +41,7 @@
 </div>
 <div class="row">
     <div class="col-md-6" id="barVis"></div>
-    <div class="col-md-6" id="timeVis"></div>
+    <div class="col-md-4" id="timeVis"></div>
 </div>
 
 <script>
@@ -51,6 +51,8 @@
         var perClientData = [];
         var referrerData = [];
         var storeData = [];
+
+        var dateFormatter = d3.time.format("%Y-%m-%d");
 
         var initVis = function(){
             var MyEventHandler = new Object();
@@ -98,6 +100,7 @@
             $(MyEventHandler).bind("selectionChanged", function(event, type){
                 graphVis.onSelectionChange(type);
                 barVis.onSelectionChange(type);
+                timeVis.onSelectionChange(type);
             });
         };
 
@@ -159,7 +162,8 @@
                     perClientData[parseInt(item.client_id)].product_count =
                                         perClientData[parseInt(item.client_id)].product_count +
                                         parseInt(item.product_count);
-                    perClientData[parseInt(item.client_id)].visit_dates.push(item.initial_visit_date);
+                    perClientData[parseInt(item.client_id)].visit_dates
+                                .push(dateFormatter.parse((item.initial_visit_date)));
                     perClientData[parseInt(item.client_id)].items_per_visit.push(item.product_count);
                 });
 

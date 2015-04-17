@@ -329,7 +329,6 @@ GraphVis.prototype.onSelectionChange= function (_referrer_code){
     var that = this;
 
     if (_referrer_code != null) {
-       // this.svg.selectAll("circle").data().forEach(function(item) {
         this.referrerNode.each(function(d) {
             if (d.referrer_code == _referrer_code) {
                 d3.select(this).selectAll("circle")

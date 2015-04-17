@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head lang="en">
     <meta charset="UTF-8">
     <title>2015 Med Challenge</title>
@@ -35,7 +36,10 @@
 
 <div class="row">
     <div class="col-md-9" id="graphVis"></div>
-    <div class="col-md-12" id="barVis"></div>
+    <div class="col-md-3" id="legend"></div>
+</div>
+<div class="row">
+    <div class="col-md-9" id="barVis"></div>
 </div>
 
 <script>
@@ -48,8 +52,40 @@
 
         var initVis = function(){
             var MyEventHandler = new Object();
-            // Instantiate vis objects
 
+            // legend
+            d3.select("#legend").append("svg").append( "circle")
+                    .attr("r", 10)
+                    .attr("fill", "red")
+                    .attr('fill-opacity', 0.2)
+                    .attr("cy", 10)
+                    .attr("cx", 20);
+
+
+            d3.select("#legend").selectAll("svg").append( "circle")
+                    .attr("r", 10)
+                    .attr('fill-opacity', 0.2)
+                    .attr("cy", 40)
+                    .attr("cx", 20);
+
+            d3.select("#legend").selectAll("svg").append("text")
+                    .attr("x", 35)
+                    .attr("y", 17)
+                    .text("Clients")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "20px")
+                    .attr("fill", "red")
+                    .attr('fill-opacity', 0.4);
+
+            d3.select("#legend").selectAll("svg").append("text")
+                    .attr("x", 35)
+                    .attr("y", 48)
+                    .text("Referrers")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "20px")
+                    .attr('fill-opacity', 0.4);
+
+            // Instantiate vis objects
             graphVis = new GraphVis(d3.select("#graphVis"), cityData, clientData,
                                             perClientData, referrerData, storeData, MyEventHandler);
             barVis = new BarVis(d3.select("#barVis"), referrerData, MyEventHandler);
@@ -122,7 +158,108 @@
                     perClientData[parseInt(item.client_id)].visit_dates.push(item.initial_visit_date);
                 });
 
+                // Close in Bradford client
+                var tmp = 43.869673;
+                perClientData[241].latitude = tmp.toString();
+
+                console.log(perClientData[171]);
+
+                var tmp = 43.425985;
+                perClientData[171].latitude = tmp.toString();
+                var tmp = -79.791186;
+                perClientData[171].longitude = tmp.toString();
+
                 storeData = _storeData;
+
+                // city data
+                cityData = _cityData;
+
+                cityData.forEach(function(item) {
+                    if (item.city == "Brampton") {
+                        var tmp = parseFloat(item.longitude)+ 0.07;
+                        item.longitude = tmp.toString();
+                        tmp = parseFloat(item.latitude)+ 0.05;
+                        item.latitude = tmp.toString();
+                    }
+                    if (item.city == "Caledon") {
+                        var tmp = -79.81697;
+                        item.longitude = tmp.toString();
+                        tmp = 43.744068 ;
+                        item.latitude = tmp.toString();
+                    }
+                    if (item.city == "Woodbridge") {
+                        var tmp = parseFloat(item.longitude)+ 0.02;
+                        item.longitude = tmp.toString();
+                        tmp = parseFloat(item.latitude)+ 0.02;
+                        item.latitude = tmp.toString();
+                    }
+                    if (item.city == "Springbrook") {
+                        tmp = parseFloat(item.latitude) - 0.02;
+                        item.latitude = tmp.toString();
+                    }
+                    if (item.city == "Mississauga") {
+                        tmp = parseFloat(item.longitude) - 0.04;
+                        item.longitude = tmp.toString();
+                        tmp = parseFloat(item.latitude)+ 0.04;
+                        item.latitude = tmp.toString();
+                    }
+                    if (item.city == "Whitby") {
+                        var tmp = 43.858064;
+                        item.latitude = tmp.toString();
+                        tmp = -79.492672;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "Thornhill") {
+                        var tmp = 43.80470000000004;
+                        item.latitude = tmp.toString();
+                        tmp = -79.465262;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "North York") {
+                        var tmp = 43.750356;
+                        item.latitude = tmp.toString();
+                        tmp = -79.54352;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "East York") {
+                        var tmp = 43.699023;
+                        item.latitude = tmp.toString();
+                        tmp = -79.425906;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "York") {
+                        var tmp = 43.68001;
+                        item.latitude = tmp.toString();
+                        tmp = -79.48625;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "Etobicoke") {
+                        var tmp = 43.738575;
+                        item.latitude = tmp.toString();
+                        tmp = -79.594726;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "Toronto") {
+                        var tmp = 43.6441 ;
+                        item.latitude = tmp.toString();
+                        tmp = -79.54329599999999;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "Bradford") {
+                        var tmp = 43.879673 ;
+                        item.latitude = tmp.toString();
+                        tmp = -79.593447;
+                        item.longitude = tmp.toString();
+                    }
+                    if (item.city == "Hamilton") {
+                        var tmp = 43.445985;
+                        item.latitude = tmp.toString();
+                        tmp = -79.791186;
+                        item.longitude = tmp.toString();
+                    }
+                })
+
+
 
             }
             initVis();

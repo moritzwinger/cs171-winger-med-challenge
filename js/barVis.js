@@ -73,12 +73,14 @@ BarVis.prototype.initVis = function(){
 
     this.svg.append("g")
         .attr("class", "y axis")
+        .style("fill-opacity", 0.4)
         .append("text")
         .attr("transform", "rotate(-90)")
         .style("font-size", "24px")
         .attr("y", -60)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
+        .attr('fill-opacity', 0.4)
         .text("Visit Count");
 
 
@@ -212,7 +214,7 @@ BarVis.prototype.onSelectionChange= function (_referrer_code){
                 .attr("fill", "#BDBBB5")
         });
     }
-    
+
 };
 
 

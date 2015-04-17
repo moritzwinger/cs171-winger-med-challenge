@@ -9,6 +9,7 @@ GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _ref
     this.parentElement = _parentElement;
     this.referrerData = _referrerData;
     this.storeData = _storeData;
+    this.cityData = _cityData;
     this.displayReferrerData = [];
     this.displayPerClientData= _perClientData;
     this.eventHandler = _eventHandler;
@@ -16,10 +17,8 @@ GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _ref
     this.referrerGraph = {nodes: [], links: []};
     this.clientGraph = {nodes: [], links: []};
 
-   // this.referrerNode;
-
     // define all constants here
-    this.margin = {top: 20, right: 30, bottom: 170, left: 20},
+    this.margin = {top: 20, right: 30, bottom: 170, left: 70},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
         this.height = 600 - this.margin.top - this.margin.bottom;
 
@@ -39,10 +38,11 @@ GraphVis.prototype.initVis = function(){
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     this.x = d3.scale.linear()
-        .range([this.width, 20]);
+        .range([this.width, 70]);
 
     this.y = d3.scale.linear()
         .range([this.height, 20]);
+
 
     // modify this to append an svg element, not modify the current placeholder SVG element
     this.svg = this.parentElement.select("svg");
@@ -74,12 +74,34 @@ GraphVis.prototype.updateVis = function() {
     this.x.domain([d3.min(this.displayReferrerData, function(d) { return d.longitude; }),
         d3.max(this.displayReferrerData, function(d) { return d.longitude; })])
 
+    // add city names
+    this.cityLabels = this.svg.selectAll()
+        .data(this.cityData)
+        .enter()
+        .append("g");
+
+    this.cityLabels.append("text")
+        .attr("x", function(d) {
+            return that.x(d.longitude)
+        })
+        .attr("y", function(d) {
+            return that.y(d.latitude)
+        })
+        .text(function (d) {
+            return d.city;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "20px")
+        .attr('fill-opacity', 0.4)
+        .attr('text-anchor', 'middle');
+
+
+
     // create the referrer and client graphs
     this.createReferrerGraph();
     this.createClientGraph();
 
     // client circles and lines go here (in red)
-
     this.clientNode = this.svg.selectAll(".clientNode")
         .data(this.clientGraph.nodes)
         .enter()
@@ -98,13 +120,17 @@ GraphVis.prototype.updateVis = function() {
     var clientLines = clientLink.enter().append("line")
         .attr("class", "link")
 
+
     // draw circles
     this.clientNode.append("circle")
         .attr("r", function(d) {
             return d.product_count * 2;
         })
         .attr("fill", "red")
-        .attr('fill-opacity', 0.1);
+        .attr('fill-opacity', 0.1)
+        .on("mouseover", function(d) {
+          console.log(d.city, d.latitude, d.longitude);
+        });
 
 
     clientLink.transition().duration(500)
@@ -147,6 +173,7 @@ GraphVis.prototype.updateVis = function() {
         })
         .attr('fill-opacity', 0.2)
         .on("mouseover", function(d) {
+            console.log(d.city, d.latitude, d.longitude);
             d3.select(this).attr("fill-opacity", 0.7);
             $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
             // highlight client circles if they are related to the source
@@ -181,7 +208,7 @@ GraphVis.prototype.updateVis = function() {
 
 
 
-};
+};;
 /**
  * create referrer Graph
  */

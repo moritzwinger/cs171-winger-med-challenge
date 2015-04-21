@@ -27,7 +27,7 @@ TimeVis = function(_parentElement, _referrerData, _perClientData, _clientData, _
     this.displayData = [];
 
     // define all "constants" here
-    this.margin = {top: 20, right: 0, bottom: 50, left: 60},
+    this.margin = {top: 20, right: 0, bottom: 50, left: 90},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
         this.height = 200 - this.margin.top - this.margin.bottom;
 
@@ -51,10 +51,10 @@ TimeVis.prototype.initVis = function(){
 
     // creates axis and scales
     this.x = d3.time.scale()
-        .range([30, this.width]);
+        .range([0, this.width]);
 
     this.y = d3.scale.linear()
-        .range([this.height, 30]);
+        .range([this.height, 0]);
 
     this.xAxis = d3.svg.axis()
         .scale(this.x)
@@ -64,6 +64,10 @@ TimeVis.prototype.initVis = function(){
         .scale(this.y)
         .ticks(5)
         .orient("left");
+
+    this.lineGen = d3.svg.line()
+        .x(function(d) { return that.x(d.visit_time); })
+        .y(function(d) { return that.y(d.product_count); });
 
     // Add axes visual elements
     this.svg.append("g")
@@ -93,7 +97,6 @@ TimeVis.prototype.initVis = function(){
     // filter, aggregate, modify data
     this.wrangleData(referrer_code);
 
-    console.log(this.displayData);
     // call the update method
     this.updateVis();
 }
@@ -104,15 +107,17 @@ TimeVis.prototype.initVis = function(){
  * Method to wrangle the data. In this case it takes an options object
  */
 TimeVis.prototype.wrangleData= function(_referrer_code){
-    // displayData should hold the data which is visualized
-    // pretty simple in this case -- no modifications needed
-    if (_referrer_code == null) {
-        this.displayData = this.perClientData;
-    } else {
-        console.log("yew");
+    var that = this;
+    this.displayData = [];
+    // show clients related to referrer
+    if (_referrer_code != null) {
+        this.perClientData.forEach(function (item) {
+            if (item.referrer_code == _referrer_code) {
+                that.displayData.push(item);
+            }
+        })
     }
-
-}
+};
 
 /**
  * the drawing function - should use the D3 selection, enter, exit
@@ -129,17 +134,34 @@ TimeVis.prototype.updateVis = function(){
     this.x.domain([firstVisit, lastVisit]);
     this.y.domain([0,5]);
 
-    // updates graph
-    var path = this.svg.selectAll(".circle")
-        .data([this.displayData])
+    this.svg.selectAll('path').remove();
+    // do for every client
+    for (var i = 0; i < this.displayData.length; i++) {
+        var visits = [];
+        this.displayData[i].visit_dates.forEach(function(item) {
+            visits.push(item);
+        });
 
-    path.enter()
-        .append("circle")
-        .attr("r", 5)
-        .attr("transform", "translate("+ this.margin.left + ", " + this.margin.top + ")");
+        console.log(visits);
 
-    path.exit()
-        .remove();
+
+       this.svg.append('path')
+            .attr('d', this.lineGen(visits))
+            .attr('stroke', 'black')
+            .attr('stroke-width', 0.5)
+            .attr('fill', 'none');
+
+        // updates axis
+        this.svg.select(".x.axis")
+            .call(this.xAxis);
+
+        this.svg.selectAll(".y.axis")
+            .call(this.yAxis)
+
+    }
+
+
+
 
     // updates axis
     this.svg.select(".x.axis")
@@ -157,7 +179,16 @@ TimeVis.prototype.updateVis = function(){
  * @param selection
  */
 TimeVis.prototype.onSelectionChange= function (_referrer_code){
+
+    // add referrer label
+    console.log(_referrer_code);
+
     this.wrangleData(_referrer_code);
+    // only update plot when mouse hits a referrer otherwise leave it for inspection
+    if (_referrer_code != null) {
+        this.updateVis();
+    }
+
 };
 
 

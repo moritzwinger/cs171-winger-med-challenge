@@ -148,8 +148,11 @@
                         latitude: "",
                         longitude: "",
                         referrer_code: "",
-                        visit_dates: [],
-                        items_per_visit: []
+                        visit_dates: []
+                          //  time: null,
+                          //  count: 0
+                       // }
+                        //items_per_visit: []
                     };
                 }
 
@@ -162,9 +165,13 @@
                     perClientData[parseInt(item.client_id)].product_count =
                                         perClientData[parseInt(item.client_id)].product_count +
                                         parseInt(item.product_count);
+
+                    var temp = {visit_time: dateFormatter.parse(item.initial_visit_date),
+                                product_count: parseInt(item.product_count)}
+
                     perClientData[parseInt(item.client_id)].visit_dates
-                                .push(dateFormatter.parse((item.initial_visit_date)));
-                    perClientData[parseInt(item.client_id)].items_per_visit.push(item.product_count);
+                                .push(temp);
+
                 });
 
                 // Close in some clients

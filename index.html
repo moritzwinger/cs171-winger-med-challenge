@@ -23,6 +23,8 @@
     <script src = "js/graphVis.js"></script>
     <script src = "js/BarVis.js"></script>
     <script src = "js/TimeVis.js"></script>
+    <script src = "js/ReferrerDetailVis.js"></script>
+    <script src = "js/ClientDetailVis.js"></script>
 
     <!-- add own stylesheet-->
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -41,8 +43,12 @@
 </div>
 <div class="row">
     <div class="col-md-6" id="barVis"></div>
-    <div class="col-md-4" id="timeVis"></div>
+    <div class="col-md-3" id="timeVis"></div>
 </div>
+    <div class="row">
+        <div class="col-md-6" id="referrerDetailVis"></div>
+        <div class="col-md-6" id="clientDetailVis"></div>
+    </div>
 
 <script>
     $(function(){
@@ -57,6 +63,7 @@
         var initVis = function(){
             var MyEventHandler = new Object();
             var MyClientEventHandler = new Object();
+            var MyReferrerEventHandler = new Object();
 
             // legend
             d3.select("#legend").append("svg").append( "circle")
@@ -92,9 +99,18 @@
 
             // Instantiate vis objects
             graphVis = new GraphVis(d3.select("#graphVis"), cityData, clientData,
-                                            perClientData, referrerData, storeData, MyEventHandler);
-            barVis = new BarVis(d3.select("#barVis"), referrerData, MyEventHandler);
-            timeVis = new TimeVis(d3.select("#timeVis"), referrerData, perClientData, clientData, MyEventHandler);
+                                            perClientData, referrerData, storeData, MyEventHandler,
+                                                         MyClientEventHandler, MyReferrerEventHandler);
+            barVis = new BarVis(d3.select("#barVis"), referrerData, MyEventHandler, MyClientEventHandler, MyReferrerEventHandler);
+            timeVis = new TimeVis(d3.select("#timeVis"), referrerData, perClientData, clientData, MyEventHandler,
+                                                    MyClientEventHandler);
+            referrerDetailVis = new ReferrerDetailVis(d3.select("#referrerDetailVis"), referrerData, perClientData,
+                                                clientData, MyEventHandler,
+                                                    MyReferrerEventHandler);
+            clientDetailVis = new ClientDetailVis(d3.select("#clientDetailVis"), referrerData, perClientData, clientData,
+                                                        MyEventHandler,
+                                                    MyClientEventHandler);
+
 
 
 
@@ -104,6 +120,13 @@
                 barVis.onSelectionChange(type);
                 timeVis.onSelectionChange(type);
             });
+            $(MyClientEventHandler).bind("selectionChanged", function(event, type){
+                clientDetailVis.onSelectionChange(type);
+            });
+            $(MyReferrerEventHandler).bind("selectionChanged", function(event, type){
+                referrerDetailVis.onSelectionChange(type);
+            });
+
         };
 
         // call this function after both files are loaded -- error should be "null" if no error

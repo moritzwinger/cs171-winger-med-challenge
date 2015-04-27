@@ -19,11 +19,13 @@
  * @param _metaData -- the meta-data / data description object
  * @constructor
  */
-BarVis = function(_parentElement, _data, _eventHandler){
+BarVis = function(_parentElement, _data, _eventHandler, _clientEventHandler, _referrerEventHandler){
     this.parentElement = _parentElement;
     this.data = _data;
     this.displayData = _data;
     this.eventHandler = _eventHandler;
+    this.clientEventHandler = _clientEventHandler;
+    this.referrerEventHandler = _referrerEventHandler;
 
     // define all constants here
     this.margin = {top: 20, right: 0, bottom: 50, left: 90},
@@ -125,6 +127,7 @@ BarVis.prototype.updateVis = function() {
     this.bar_enter.append("rect")
         .on("mouseover", function(d) {
             d3.select(this).attr("fill-opacity", 0.7);
+            $(that.referrerEventHandler).trigger("selectionChanged", d.referrer_code.toString());
             $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
         })
         .on('mouseout', function(d) {
@@ -176,6 +179,7 @@ BarVis.prototype.updateVis = function() {
         .on("mouseover", function(d) {
             d3.select(this).attr("fill", "black");
             $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
+            $(that.referrerEventHandler).trigger("selectionChanged", d.referrer_code);
         })
         .on("mouseout", function(d) {
             d3.select(this).attr("fill", "#BDBBB5");
@@ -191,10 +195,7 @@ BarVis.prototype.updateVis = function() {
 
 
 /**
- * Gets called by event handler and should create new aggregated data
- * aggregation is done by the function "aggregate(filter)". Filter has to
- * be defined here.
- * @param selection
+ * Gets called by event handler
  */
 BarVis.prototype.onSelectionChange= function (_referrer_code){
     if (_referrer_code != null) {

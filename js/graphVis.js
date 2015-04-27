@@ -6,7 +6,7 @@
 
 
 GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData,
-                    _eventHandler){
+                    _eventHandler, _clientEventHandler, _referrerEventHandler){
     this.parentElement = _parentElement;
     this.referrerData = _referrerData;
     this.storeData = _storeData;
@@ -14,6 +14,8 @@ GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _ref
     this.displayReferrerData = [];
     this.displayPerClientData= _perClientData;
     this.eventHandler = _eventHandler;
+    this.clientEventHandler = _clientEventHandler;
+    this.referrerEventHandler = _referrerEventHandler;
 
     this.referrerGraph = {nodes: [], links: []};
     this.clientGraph = {nodes: [], links: []};
@@ -134,6 +136,7 @@ GraphVis.prototype.updateVis = function() {
         .on("mouseover", function(d) {
             d3.select(this).attr("fill-opacity", 0.7);
             $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
+            $(that.referrerEventHandler).trigger("selectionChanged", d.referrer_code);
             // highlight client circles if they are related to the source
             that.clientNode.each(function(item) {
                 if (d.referrer_code == item.referrer_code) {
@@ -212,7 +215,9 @@ GraphVis.prototype.updateVis = function() {
                         .attr('fill-opacity', 0.9);
                 }
             });
-            $(that.eventHandler).trigger("selectionChanged", d.referrer_code)
+            $(that.clientEventHandler).trigger("selectionChanged", (d.client_id).toString());
+            $(that.referrerEventHandler).trigger("selectionChanged", d.referrer_code);
+            $(that.eventHandler).trigger("selectionChanged", d.referrer_code);
         })
         .on('mouseout', function(d){
             d3.select(this).attr("fill-opacity", 0.1);

@@ -12,18 +12,19 @@
  * */
 
 /**
- * TimeVis object for HW3 of CS171
+ * TimeVis
  * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
  * @param _data -- the data array
  * @param _metaData -- the meta-data / data description object
  * @param _eventHandler -- the Eventhandling Object to emit data to (see Task 4)
  * @constructor
  */
-TimeVis = function(_parentElement, _referrerData, _perClientData, _clientData, _eventHandler){
+TimeVis = function(_parentElement, _referrerData, _perClientData, _clientData, _eventHandler, _clientEventHandler){
     this.parentElement = _parentElement;
     this.perClientData = _perClientData;
     this.referrerData = _referrerData;
     this.eventHandler = _eventHandler;
+    this.clientEventHandler = _clientEventHandler;
     this.displayData = [];
 
     // define all "constants" here
@@ -138,20 +139,21 @@ TimeVis.prototype.updateVis = function(){
 
     this.svg.selectAll('path').remove();
     this.svg.selectAll('circle').remove();
-    this.svg.selectAll().remove();
+    this.svg.selectAll('label').remove();
     //this.svg.selectAll('.textLabel').exit().remove();
 
     // add text label
-    this.svg.selectAll('.text')
+   /* this.svg.selectAll('.label')
         .data(this.displayData)
         .enter()
+        .append("g")
         .append("text")
         .text(function(d) {
             return d.referrer_code;
         })
         .attr("x", 100)
         .attr("y", 30)
-
+*/
 
     // do for every client
     for (var i = 0; i < this.displayData.length; i++) {
@@ -173,9 +175,10 @@ TimeVis.prototype.updateVis = function(){
             .on("mouseover", function(d){
                 // find associated client id and highlight circles in the
                 // current plot
-                console.log(d3.select(this.nextElementSibling).data()[0]);
+              //  console.log(d3.select(this.nextElementSibling).data()[0]);
                 var associated_referrer_code = d3.select(this.nextElementSibling).data()[0].referrer_code;
                 var associated_client_id = d3.select(this.nextElementSibling).data()[0].client_id;
+
                 that.svg.selectAll('circle').data().forEach(function(item, i) {
                     if (item.client_id == associated_client_id) {
                       //  console.log(associated_referrer_code);
@@ -198,6 +201,10 @@ TimeVis.prototype.updateVis = function(){
                 d3.select(this)
                     .attr("stroke-opacity", 0.7)
                     .attr('stroke-width', 1.5);
+
+                // trigger client event handler
+                $(that.clientEventHandler).trigger("selectionChanged", (associated_client_id).toString());
+
             })
             .on("mouseout", function(d){
                 d3.select(this).attr("stroke-opacity", 0.2)
@@ -208,6 +215,7 @@ TimeVis.prototype.updateVis = function(){
                         .attr("r", 2)
                         .attr('fill-opacity', 0.2);
                 });
+                $(that.clientEventHandler).trigger("selectionChanged", null);
             });
 
         // add circles
@@ -226,10 +234,13 @@ TimeVis.prototype.updateVis = function(){
             .attr('fill-opacity', 0.2)
             .attr("transform", "translate("+ this.margin.left + ", " + this.margin.top + ")")
             .on("mouseover", function(d){
+                //console.log(d.client_id);
+
                 // highlight path
                 d3.selectAll("path").forEach(function(item, i) {
                     //TODO
-                    console.log(item);
+               //     console.log(item);
+               //     console.log(item);
                   //  console.log(i, item[i]);
                    // d3.select(item[i])
                 });
@@ -240,13 +251,14 @@ TimeVis.prototype.updateVis = function(){
                 // highlight circle
                 d3.select(this).attr("fill-opacity", 0.7);
                 d3.select(this).attr('r', 4);
-
+                $(that.clientEventHandler).trigger("selectionChanged", (d.client_id).toString());
                 // TODO highlight associated line and connected circles
             })
             .on("mouseout", function(d){
                 // reset the circles
                 d3.select(this).attr("fill-opacity", 0.4);
                 d3.select(this).attr('r', 2);
+                $(that.clientEventHandler).trigger("selectionChanged", null);
             });
 
 

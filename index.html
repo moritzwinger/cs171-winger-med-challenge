@@ -56,6 +56,7 @@
 
         var initVis = function(){
             var MyEventHandler = new Object();
+            var MyClientEventHandler = new Object();
 
             // legend
             d3.select("#legend").append("svg").append( "circle")
@@ -96,7 +97,8 @@
             timeVis = new TimeVis(d3.select("#timeVis"), referrerData, perClientData, clientData, MyEventHandler);
 
 
-            // bind the eventHandler to the Vis Objects
+
+            // bind the eventHandlers to the Vis Objects
             $(MyEventHandler).bind("selectionChanged", function(event, type){
                 graphVis.onSelectionChange(type);
                 barVis.onSelectionChange(type);
@@ -144,21 +146,19 @@
                 for (i = 0; i < perClientData.length; i++) {
                     perClientData[i] = {
                         city: "",
+                        client_id: "",
                         product_count: 0,
                         latitude: "",
                         longitude: "",
                         referrer_code: "",
                         visit_dates: []
-                          //  time: null,
-                          //  count: 0
-                       // }
-                        //items_per_visit: []
                     };
                 }
 
                 // fill up perClientData
                 _clientData.forEach(function(item) {
                     perClientData[parseInt(item.client_id)].city = item.city;
+                    perClientData[parseInt(item.client_id)].client_id = item.client_id;
                     perClientData[parseInt(item.client_id)].latitude = item.latitude;
                     perClientData[parseInt(item.client_id)].longitude = item.longitude;
                     perClientData[parseInt(item.client_id)].referrer_code = item.referrer_code;
@@ -166,7 +166,10 @@
                                         perClientData[parseInt(item.client_id)].product_count +
                                         parseInt(item.product_count);
 
-                    var temp = {visit_time: dateFormatter.parse(item.initial_visit_date),
+                    var temp = {
+                                referrer_code: item.referrer_code,
+                                client_id: parseInt(item.client_id),
+                                visit_time: dateFormatter.parse(item.initial_visit_date),
                                 product_count: parseInt(item.product_count)}
 
                     perClientData[parseInt(item.client_id)].visit_dates

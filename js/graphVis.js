@@ -5,7 +5,8 @@
  */
 
 
-GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData, _eventHandler){
+GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData,
+                    _eventHandler){
     this.parentElement = _parentElement;
     this.referrerData = _referrerData;
     this.storeData = _storeData;
@@ -129,7 +130,7 @@ GraphVis.prototype.updateVis = function() {
         .attr("r", function(d) {
             return d.visit_count * 1.5;
         })
-        .attr('fill-opacity', 0.2)
+        .attr('fill-opacity', 0.1)
         .on("mouseover", function(d) {
             d3.select(this).attr("fill-opacity", 0.7);
             $(that.eventHandler).trigger("selectionChanged", d.referrer_code);

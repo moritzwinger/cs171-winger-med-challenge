@@ -223,7 +223,6 @@ GraphVis.prototype.updateVis = function() {
                 d3.select(this).selectAll("text")
                     .attr('fill-opacity', 0.4);
                 $(that.eventHandler).trigger("selectionChanged", null)
-
             });
         });
 

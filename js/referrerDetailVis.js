@@ -53,7 +53,7 @@ ReferrerDetailVis.prototype.initVis = function(){
  */
 ReferrerDetailVis.prototype.updateVis = function(){
 
-    var x = this.margin.right + 70;
+    var x = this.margin.right + 30;
 
     this.svg.selectAll("text").remove();
 

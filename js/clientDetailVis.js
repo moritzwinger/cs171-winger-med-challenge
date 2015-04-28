@@ -144,8 +144,21 @@ ClientDetailVis.prototype.onSelectionChange= function (_client_id){
                 d3.select(d3.select('#graphVis').selectAll('circle')[0][i])
                     .attr('fill-opacity', 0.1);
             }
-
         });
+        // on mouseout get rid of current client info
+        this.displayData = {product_count: "",
+            latitude: "",
+            longitude: "",
+            city: "",
+            client_id: "",
+            latitude: "",
+            longitude: "",
+            product_count: "",
+            referrer_code: "",
+            visit_dates: []
+        };
+        this.updateVis();
+
     }
 };
 

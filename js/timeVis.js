@@ -17,7 +17,7 @@ TimeVis = function(_parentElement, _referrerData, _perClientData, _clientData, _
     this.displayData = [];
 
     // define all "constants" here
-    this.margin = {top: 20, right: 20, bottom: 50, left: 60},
+    this.margin = {top: 20, right: 20, bottom: 50, left: 90},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
         this.height = 200 - this.margin.top - this.margin.bottom;
 

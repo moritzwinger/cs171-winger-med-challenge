@@ -11,13 +11,11 @@
     <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
 
-
     <!--Stylesheets-->
     <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
 
     <!-- Get some nice font-->
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
-
 
     <!-- scripts -->
     <script src = "js/graphVis.js"></script>
@@ -26,16 +24,14 @@
     <script src = "js/ReferrerDetailVis.js"></script>
     <script src = "js/ClientDetailVis.js"></script>
 
-    <!-- add own stylesheet-->
+    <!-- my stylesheet-->
     <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
 
 <body>
 
-
     <h1 align="left">Medical Store Geospatial Challenge</h1>
-
 
 <div class="row">
     <div class="col-md-9" id="graphVis"></div>
@@ -65,14 +61,13 @@
             var MyClientEventHandler = new Object();
             var MyReferrerEventHandler = new Object();
 
-            // legend
+            // legends
             d3.select("#legend").append("svg").append( "circle")
                     .attr("r", 10)
                     .attr("fill", "red")
                     .attr('fill-opacity', 0.2)
                     .attr("cy", 10)
                     .attr("cx", 20);
-
 
             d3.select("#legend").selectAll("svg").append( "circle")
                     .attr("r", 10)
@@ -111,9 +106,6 @@
                                                         MyEventHandler,
                                                     MyClientEventHandler);
 
-
-
-
             // bind the eventHandlers to the Vis Objects
             $(MyEventHandler).bind("selectionChanged", function(event, type){
                 graphVis.onSelectionChange(type);
@@ -134,6 +126,7 @@
             if (!error) {
                 // put data in a good format here
 
+                // referrer data
                 // referrers 0 - 44, walkins, etc 45-50
                 _referrerData.forEach(function(item) {
                     if (item.city != "") {
@@ -142,7 +135,6 @@
                     if (item.referrer_code == "Referrer_40") {
                         var tmp = parseFloat(item.longitude) - 0.55;
                         item.longitude = tmp.toString();
-                        //var tmp = parseFloat(item.latitude) +
                     }
                     if (item.referrer_code == "Referrer_29" || item.referrer_code == "Referrer_27"
                                     || item.referrer_code ==  "Referrer_26") {
@@ -150,22 +142,20 @@
                         item.longitude = tmp.toString();
                     }
                 });
-
                 // push WALK_IN, OTHER_CLIENTS, REHAB, LOYAL, MEDIA, FLYER to the end (indices 45-50)
                 for (i = 0; i < 5; i++) {
                     referrerData.push(_referrerData[i]);
                     referrerData[45 + i].latitude = "43.5";
                     referrerData[45 + i].longitude = "-79.5";
                 }
-
                 // FLYER
                 referrerData.push(_referrerData[28]);
                 referrerData[50].latitude = "43.5";
                 referrerData[50].longitude = "-79.5";
 
-                // client data: indexed by client id, will contain lat/lon/item_count/array of visit dates, city
-                perClientData = d3.range(0,351);
 
+                // 'per' client data: indexed by client id, will contain lat/lon/item_count/array of visit dates, city
+                perClientData = d3.range(0,351);
                 for (i = 0; i < perClientData.length; i++) {
                     perClientData[i] = {
                         city: "",
@@ -177,7 +167,6 @@
                         visit_dates: []
                     };
                 }
-
                 // fill up perClientData
                 _clientData.forEach(function(item) {
                     perClientData[parseInt(item.client_id)].city = item.city;
@@ -188,44 +177,37 @@
                     perClientData[parseInt(item.client_id)].product_count =
                                         perClientData[parseInt(item.client_id)].product_count +
                                         parseInt(item.product_count);
-
                     var temp = {
                                 referrer_code: item.referrer_code,
                                 client_id: parseInt(item.client_id),
                                 visit_time: dateFormatter.parse(item.initial_visit_date),
                                 product_count: parseInt(item.product_count)}
-
                     perClientData[parseInt(item.client_id)].visit_dates
                                 .push(temp);
-
                 });
-
                 // Close in some clients
                 var tmp = 43.869673;
                 perClientData[241].latitude = tmp.toString();
-
-
                 var tmp = 43.425985;
                 perClientData[171].latitude = tmp.toString();
                 var tmp = -79.791186;
                 perClientData[171].longitude = tmp.toString();
-
-
                 var tmp = 43.869673;
                 perClientData[139].latitude = tmp.toString();
                 var tmp = -79.791541;
                 perClientData[139].longitude = tmp.toString();
 
-                // store data
-                storeData = _storeData;
                 // client data
                 clientData = _clientData;
+
+                // store data
+                storeData = _storeData;
+
 
                 // city data
                 cityData = _cityData;
 
                 cityData.forEach(function(item) {
-
                     switch(item.city) {
                         case "Brampton":
                             item.longitude = (parseFloat(item.longitude) + 0.07).toString();
@@ -316,7 +298,5 @@
         return parseInt(style.getPropertyValue('width'));
     }
 </script>
-
-
 </body>
 </html>

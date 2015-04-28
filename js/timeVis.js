@@ -1,22 +1,11 @@
-/**
- * Created by Hendrik Strobelt (hendrik.strobelt.com) on 1/28/15.
- */
-
-
-/*
- *
- * ======================================================
- * We follow the vis template of init - wrangle - update
- * ======================================================
- *
- * */
 
 /**
- * TimeVis
- * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
- * @param _data -- the data array
- * @param _metaData -- the meta-data / data description object
- * @param _eventHandler -- the Eventhandling Object to emit data to (see Task 4)
+ * TimeVis: visualizes client visits as a function of time
+ * @param _parentElement
+ * @param _rerrerData
+ * @param _perClientData
+ * @param _eventHandler
+ * @param _clientEventHandler
  * @constructor
  */
 TimeVis = function(_parentElement, _referrerData, _perClientData, _clientData, _eventHandler, _clientEventHandler){
@@ -33,15 +22,14 @@ TimeVis = function(_parentElement, _referrerData, _perClientData, _clientData, _
         this.height = 200 - this.margin.top - this.margin.bottom;
 
     this.initVis();
-}
-
+};
 
 /**
- * Method that sets up the SVG and the variables
+ * set up the SVG and the variables
  */
 TimeVis.prototype.initVis = function(){
 
-    var that = this; // read about the this
+    var that = this;
 
     // creates svg
     this.svg = this.parentElement.append("svg")
@@ -50,8 +38,7 @@ TimeVis.prototype.initVis = function(){
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-
-    // creates axis and scales
+    // create axis and scales
     this.x = d3.time.scale()
         .range([0, this.width]);
 
@@ -95,17 +82,15 @@ TimeVis.prototype.initVis = function(){
 
     var referrer_code = null;
 
-    // filter, aggregate, modify data
+    // modify data
     this.wrangleData(referrer_code);
 
     // call the update method
     this.updateVis();
-}
-
-
+};
 
 /**
- * Method to wrangle the data. In this case it takes an options object
+ * modify data
  */
 TimeVis.prototype.wrangleData= function(_referrer_code){
     var that = this;
@@ -121,8 +106,7 @@ TimeVis.prototype.wrangleData= function(_referrer_code){
 };
 
 /**
- * the drawing function - should use the D3 selection, enter, exit
- * @param  options -- only needed if different kinds of updates are needed
+ * update Vis
  */
 TimeVis.prototype.updateVis = function(){
 
@@ -140,20 +124,6 @@ TimeVis.prototype.updateVis = function(){
     this.svg.selectAll('path').remove();
     this.svg.selectAll('circle').remove();
     this.svg.selectAll('label').remove();
-    //this.svg.selectAll('.textLabel').exit().remove();
-
-    // add text label
-   /* this.svg.selectAll('.label')
-        .data(this.displayData)
-        .enter()
-        .append("g")
-        .append("text")
-        .text(function(d) {
-            return d.referrer_code;
-        })
-        .attr("x", 100)
-        .attr("y", 30)
-*/
 
     // do for every client
     for (var i = 0; i < this.displayData.length; i++) {
@@ -175,13 +145,12 @@ TimeVis.prototype.updateVis = function(){
             .on("mouseover", function(d){
                 // find associated client id and highlight circles in the
                 // current plot
-              //  console.log(d3.select(this.nextElementSibling).data()[0]);
+               //  console.log(d3.select(this.nextElementSibling).data()[0]);
                 var associated_referrer_code = d3.select(this.nextElementSibling).data()[0].referrer_code;
                 var associated_client_id = d3.select(this.nextElementSibling).data()[0].client_id;
 
                 that.svg.selectAll('circle').data().forEach(function(item, i) {
                     if (item.client_id == associated_client_id) {
-                      //  console.log(associated_referrer_code);
                         d3.select(that.svg.selectAll('circle')[0][i])
                             .attr("r", 4)
                             .attr('fill-opacity', 0.7);
@@ -194,7 +163,6 @@ TimeVis.prototype.updateVis = function(){
                         var tmp = d3.select("#graphVis").selectAll("circle");
                         // TODO highlight client circle in graphVis
                       //  console.log(d3.select(tmp[i]));
-
                           //  .attr('fill-opacity', 0.7);
                     }
                 });
@@ -234,8 +202,6 @@ TimeVis.prototype.updateVis = function(){
             .attr('fill-opacity', 0.2)
             .attr("transform", "translate("+ this.margin.left + ", " + this.margin.top + ")")
             .on("mouseover", function(d){
-                //console.log(d.client_id);
-
                 // highlight path
                 d3.selectAll("path").forEach(function(item, i) {
                     //TODO
@@ -261,7 +227,6 @@ TimeVis.prototype.updateVis = function(){
                 $(that.clientEventHandler).trigger("selectionChanged", null);
             });
 
-
         // updates axis
         this.svg.select(".x.axis")
             .call(this.xAxis);
@@ -280,10 +245,8 @@ TimeVis.prototype.updateVis = function(){
 }
 
 /**
- * Gets called by event handler and should create new aggregated data
- * aggregation is done by the function "aggregate(filter)". Filter has to
- * be defined here.
- * @param selection
+ * called by eventHandler
+ * @param _referrer_code
  */
 TimeVis.prototype.onSelectionChange= function (_referrer_code){
 
@@ -291,8 +254,6 @@ TimeVis.prototype.onSelectionChange= function (_referrer_code){
     if (_referrer_code != null) {
         this.wrangleData(_referrer_code);
         this.updateVis();
-        // add referrer text label
-
     }
 
 };

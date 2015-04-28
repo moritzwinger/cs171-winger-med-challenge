@@ -1,22 +1,10 @@
 /**
- * Created by Hendrik Strobelt (hendrik.strobelt.com) on 1/28/15.
- */
-
-
-/*
- *
- * ======================================================
- * We follow the vis template of init - wrangle - update
- * ======================================================
- *
- * */
-
-/**
- * ClientDetailVis
- * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
- * @param _data -- the data array
- * @param _metaData -- the meta-data / data description object
- * @param _eventHandler -- the Eventhandling Object to emit data to (see Task 4)
+ * ReferrerDetailVis: print details on a referrer
+ * @param _parentElement
+ * @param _referrerData
+ * @param _perClientData
+ * @param _clientData
+ * @param _clientEventHandler
  * @constructor
  */
 ReferrerDetailVis = function(_parentElement, _referrerData, _perClientData, _clientData, _clientEventHandler){
@@ -32,23 +20,19 @@ ReferrerDetailVis = function(_parentElement, _referrerData, _perClientData, _cli
 
     console.log(this.referrerData);
 
-
     // define all "constants" here
     this.margin = {top: 20, right: 20, bottom: 50, left: 60},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
         this.height = 200 - this.margin.top - this.margin.bottom;
 
     this.initVis();
-}
+};
 
 
 /**
- * Method that sets up the SVG and the variables
+ * set up the SVG and the variables
  */
 ReferrerDetailVis.prototype.initVis = function(){
-
-    var that = this; // read about the this
-
     // creates svg
     this.svg = this.parentElement.append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
@@ -56,20 +40,16 @@ ReferrerDetailVis.prototype.initVis = function(){
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-
-
     // modify this to append an svg element, not modify the current placeholder SVG element
     this.svg = this.parentElement.select("svg");
 
-
     // call the update method
     this.updateVis();
-}
+};
 
 
 /**
- * the drawing function - should use the D3 selection, enter, exit
- * @param  options -- only needed if different kinds of updates are needed
+ * update vis
  */
 ReferrerDetailVis.prototype.updateVis = function(){
 
@@ -89,33 +69,23 @@ ReferrerDetailVis.prototype.updateVis = function(){
     this.svg.append("text")
         .attr('x', x)
         .attr('y', 70)
-        .html("City: " + this.displayData.city );
+        .html("Total Visits: "  + this.displayData.visit_count);
     this.svg.append("text")
         .attr('x', x)
         .attr('y', 90)
-        .html("Postal Code: "  + this.displayData.postal_code_referrer);
+        .html("City: " + this.displayData.city );
     this.svg.append("text")
         .attr('x', x)
         .attr('y', 110)
-        .html("Total Visits: "  + this.displayData.visit_count);
-
-
-
-
-
-    // console.log(this.displayData);
-
-
+        .html("Postal Code: "  + this.displayData.postal_code_referrer);
 };
 
 /**
- * Gets called by event handler
+ * called by event handler
  * @param _client_id
  */
 ReferrerDetailVis.prototype.onSelectionChange= function (_referrer_code){
-
     var that = this;
-
     if (_referrer_code != null) {
         that.referrerData.forEach(function(d) {
             if (d.referrer_code == _referrer_code) {
@@ -125,14 +95,4 @@ ReferrerDetailVis.prototype.onSelectionChange= function (_referrer_code){
 
     }
     this.updateVis();
-
 };
-
-
-
-
-
-
-/**
- * Created by mwinger on 27/04/15.
- */

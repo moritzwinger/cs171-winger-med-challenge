@@ -1,22 +1,10 @@
 /**
- * Created by Hendrik Strobelt (hendrik.strobelt.com) on 1/28/15.
- */
-
-
-/*
- *
- * ======================================================
- * We follow the vis template of init - wrangle - update
- * ======================================================
- *
- * */
-
-/**
- * ClientDetailVis
- * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
- * @param _data -- the data array
- * @param _metaData -- the meta-data / data description object
- * @param _eventHandler -- the Eventhandling Object to emit data to (see Task 4)
+ * ClientDetailVis: print details of a particular client
+ * @param _parentElement
+ * @param _referrerData
+ * @param _perClientData
+ * @param _clientData
+ * @param _clientEventHandler
  * @constructor
  */
 ClientDetailVis = function(_parentElement, _referrerData, _perClientData, _clientData, _clientEventHandler){
@@ -36,24 +24,20 @@ ClientDetailVis = function(_parentElement, _referrerData, _perClientData, _clien
                         visit_dates: []
                         };
 
-
     // define all "constants" here
     this.margin = {top: 20, right: 20, bottom: 50, left: 60},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,
         this.height = 200 - this.margin.top - this.margin.bottom;
 
     this.initVis();
-}
+};
 
 
 /**
- * Method that sets up the SVG and the variables
+ * set up the SVG and the variables
  */
 ClientDetailVis.prototype.initVis = function(){
-
-    var that = this; // read about the this
-
-    // creates svg
+    // create svg
     this.svg = this.parentElement.append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
@@ -63,15 +47,13 @@ ClientDetailVis.prototype.initVis = function(){
     // modify this to append an svg element, not modify the current placeholder SVG element
     this.svg = this.parentElement.select("svg");
 
-
     // call the update method
     this.updateVis();
-}
+};
 
 
 /**
- * the drawing function - should use the D3 selection, enter, exit
- * @param  options -- only needed if different kinds of updates are needed
+ * update vis
  */
 ClientDetailVis.prototype.updateVis = function(){
 
@@ -115,13 +97,6 @@ ClientDetailVis.prototype.updateVis = function(){
                    this.displayData.visit_dates[i].visit_time.getFullYear()
                         + " :: " + this.displayData.visit_dates[i].product_count, " item(s)");
     }
-
-
-
-
-   // console.log(this.displayData);
-
-
 };
 
 /**
@@ -131,7 +106,6 @@ ClientDetailVis.prototype.updateVis = function(){
 ClientDetailVis.prototype.onSelectionChange= function (_client_id){
 
     var that = this;
-
 
     if (_client_id != null) {
         // highlight client in graph Vis
@@ -143,7 +117,6 @@ ClientDetailVis.prototype.onSelectionChange= function (_client_id){
                     .attr('fill-opacity', 0.9);
             }
         });
-
 
         // TODO highlight circle in timeVis (this happens also when client node in graphVis is selected
         // this is a bit weird )
@@ -164,7 +137,7 @@ ClientDetailVis.prototype.onSelectionChange= function (_client_id){
         this.updateVis();
 
     }
-    // if mouseout reset all graph nodes
+    // on mouse-out reset all graph nodes
     else {
         d3.select('#graphVis').selectAll('circle').data().forEach(function (item, i) {
             if (item.client_id != null) {
@@ -174,9 +147,6 @@ ClientDetailVis.prototype.onSelectionChange= function (_client_id){
 
         });
     }
-
-
-
 };
 
 

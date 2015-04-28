@@ -1,22 +1,10 @@
 /**
- * Created by Hendrik Strobelt (hendrik.strobelt.com) on 1/28/15.
- */
-
-
-
-/*
- *
- * ======================================================
- * We follow the vis template of init - wrangle - update
- * ======================================================
- *
- * */
-
-/**
- * BarVis object for HW3 of CS171
- * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
- * @param _data -- the data array
- * @param _metaData -- the meta-data / data description object
+ * BarVis: Bar Chart on Referrer Information (Number of referrals as function of source)
+ * @param _parentElement
+ * @param _data
+ * @param _eventHandler
+ * @param _clientEventHandler
+ * @param _referrerEventHandler
  * @constructor
  */
 BarVis = function(_parentElement, _data, _eventHandler, _clientEventHandler, _referrerEventHandler){
@@ -34,17 +22,13 @@ BarVis = function(_parentElement, _data, _eventHandler, _clientEventHandler, _re
 
     this.initVis();
 
-}
-
+};
 
 /**
- * Method that sets up the SVG and the variables
+ * sets up the SVG and the variables
  */
 BarVis.prototype.initVis = function(){
-
-
-    var that = this; // read about the this
-
+    var that = this;
     // construct or select SVG
     // create axis and scales
     this.svg = this.parentElement.append("svg")
@@ -62,7 +46,6 @@ BarVis.prototype.initVis = function(){
     this.xAxis = d3.svg.axis()
         .scale(this.x);
 
-
     this.yAxis = d3.svg.axis()
         .scale(this.y)
         .ticks(5)
@@ -71,7 +54,6 @@ BarVis.prototype.initVis = function(){
     // Add axes visual elements
     this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
-
 
     this.svg.append("g")
         .attr("class", "y axis")
@@ -85,30 +67,25 @@ BarVis.prototype.initVis = function(){
         .attr('fill-opacity', 0.4)
         .text("Visit Count");
 
-
     // modify this to append an svg element, not modify the current placeholder SVG element
     this.svg = this.parentElement.select("svg");
 
-    // filter, aggregate, modify data
+    // modify data
     this.wrangleData(null);
 
     // call the update method
     this.updateVis(null);
-}
-
+};
 
 /**
- * Method to wrangle the data. In this case it takes an options object
- * @param _filterFunction - a function that filters data or "null" if none
+ * modify data
  */
 BarVis.prototype.wrangleData= function(){
     this.displayData = this.displayData;
 };
 
-
-
 /**
- * the drawing function - should use the D3 selection, enter, exit
+ * update vis
  */
 BarVis.prototype.updateVis = function() {
     //...update graphs
@@ -188,14 +165,11 @@ BarVis.prototype.updateVis = function() {
 
     this.svg.selectAll(".y.axis")
         .call(this.yAxis)
-
-
-
-}
-
+};
 
 /**
- * Gets called by event handler
+ * called by event handler
+ * @param _referrer_code
  */
 BarVis.prototype.onSelectionChange= function (_referrer_code){
     if (_referrer_code != null) {
@@ -215,7 +189,6 @@ BarVis.prototype.onSelectionChange= function (_referrer_code){
                 .attr("fill", "#BDBBB5")
         });
     }
-
 };
 
 

@@ -1,10 +1,16 @@
 /**
- * GraphVis
- *
- * creates the graph visualization
+ * GraphVis: create scatter plot on referrers and clients
+ * @param _parentElement
+ * @param _cityData
+ * @param _clientData
+ * @param _perClientData
+ * @param _referrerData
+ * @param _storeData
+ * @param _eventHandler
+ * @param _clientEventHandler
+ * @param _referrerEventHandler
+ * @constructor
  */
-
-
 GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _referrerData, _storeData,
                     _eventHandler, _clientEventHandler, _referrerEventHandler){
     this.parentElement = _parentElement;
@@ -16,7 +22,6 @@ GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _ref
     this.eventHandler = _eventHandler;
     this.clientEventHandler = _clientEventHandler;
     this.referrerEventHandler = _referrerEventHandler;
-
     this.referrerGraph = {nodes: [], links: []};
     this.clientGraph = {nodes: [], links: []};
 
@@ -30,7 +35,7 @@ GraphVis = function(_parentElement, _cityData, _clientData, _perClientData, _ref
 };
 
 /**
- * Method that sets up the SVG and the variables
+ * set up the SVG and the variables
  */
 GraphVis.prototype.initVis = function(){
     var that = this;
@@ -46,7 +51,6 @@ GraphVis.prototype.initVis = function(){
     this.y = d3.scale.linear()
         .range([this.height, 20]);
 
-
     // modify this to append an svg element, not modify the current placeholder SVG element
     this.svg = this.parentElement.select("svg");
 
@@ -57,8 +61,7 @@ GraphVis.prototype.initVis = function(){
 
 
 /**
- * Method to wrangle the data. In this case it takes an options object
- * @param _filterFunction - a function that filters data or "null" if none
+ * modify data
  */
 GraphVis.prototype.wrangleData= function(){
     this.displayReferrerData = this.referrerData;
@@ -66,7 +69,7 @@ GraphVis.prototype.wrangleData= function(){
 };
 
 /**
- * the drawing function
+ * update vis
  */
 GraphVis.prototype.updateVis = function() {
     var that = this;
@@ -98,13 +101,9 @@ GraphVis.prototype.updateVis = function() {
         .attr('fill-opacity', 0.4)
         .attr('text-anchor', 'middle');
 
-
-
     // create the referrer and client graphs
     this.createReferrerGraph();
     this.createClientGraph();
-
-
 
     // create svg for nodes
     this.referrerNode = this.svg.selectAll(".referrerNode")
@@ -197,7 +196,6 @@ GraphVis.prototype.updateVis = function() {
     var clientLines = clientLink.enter().append("line")
         .attr("class", "link")
 
-
     // draw circles
     this.clientNode.append("circle")
         .attr("r", function(d) {
@@ -229,7 +227,6 @@ GraphVis.prototype.updateVis = function() {
             });
         });
 
-
     clientLink.transition().duration(500)
         .attr("x1", function(d) { return that.x(d.target.longitude); })
         .attr("y1", function(d) { return that.y(d.target.latitude); })
@@ -240,10 +237,7 @@ GraphVis.prototype.updateVis = function() {
         .attr("transform", function(d) {
             return "translate("+ that.x(d.x) +","+ that.y(d.y) +")";
         });
-
-
-
-};;
+};
 /**
  * create referrer Graph
  */
@@ -327,8 +321,8 @@ GraphVis.prototype.createClientGraph = function() {
 };
 
 /**
- * Gets called by event handler
- *
+ * called by event handler
+ * @param _referrer_code
  */
 GraphVis.prototype.onSelectionChange= function (_referrer_code){
 

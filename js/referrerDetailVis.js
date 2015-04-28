@@ -18,7 +18,6 @@ ReferrerDetailVis = function(_parentElement, _referrerData, _perClientData, _cli
                         visit_count: ""};
 
 
-    console.log(this.referrerData);
 
     // define all "constants" here
     this.margin = {top: 20, right: 20, bottom: 50, left: 60},

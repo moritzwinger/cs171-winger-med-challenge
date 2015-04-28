@@ -6,23 +6,23 @@
     <title>Medical Store Geospatial Challenge</title>
 
     <!-- ADD Libraries-->
-    <script src="libs/d3/d3.min.js" charset="utf-8"></script>
-    <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
-    <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="d3.min.js" charset="utf-8"></script>
+    <script src="jquery-2.1.1.min.js" charset="utf-8"></script>
+    <script src="bootstrap.min.js" charset="utf-8"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
 
     <!--Stylesheets-->
-    <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 
     <!-- Get some nice font-->
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
     <!-- scripts -->
-    <script src = "js/graphVis.js"></script>
-    <script src = "js/BarVis.js"></script>
-    <script src = "js/TimeVis.js"></script>
-    <script src = "js/ReferrerDetailVis.js"></script>
-    <script src = "js/ClientDetailVis.js"></script>
+    <script src = "graphVis.js"></script>
+    <script src = "BarVis.js"></script>
+    <script src = "TimeVis.js"></script>
+    <script src = "ReferrerDetailVis.js"></script>
+    <script src = "ClientDetailVis.js"></script>
 
     <!-- my stylesheet-->
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -92,7 +92,7 @@
                     .attr('fill-opacity', 0.4);
 
             // Instantiate vis objects
-                graphVis = new GraphVis(d3.select("#graphVis"), cityData, clientData,
+            graphVis = new GraphVis(d3.select("#graphVis"), cityData, clientData,
                                             perClientData, referrerData, storeData, MyEventHandler,
                                                          MyClientEventHandler, MyReferrerEventHandler);
             barVis = new BarVis(d3.select("#barVis"), referrerData, MyEventHandler, MyClientEventHandler, MyReferrerEventHandler);
@@ -140,10 +140,6 @@
                         var tmp = parseFloat(item.longitude)- 0.1;
                         item.longitude = tmp.toString();
                     }
-
-                    // add total purchased items to referrerData
-                    console.log(item.referrer_code);
-
                 });
                 // push WALK_IN, OTHER_CLIENTS, REHAB, LOYAL, MEDIA, FLYER to the end (indices 45-50)
                 for (i = 0; i < 5; i++) {
@@ -155,8 +151,6 @@
                 referrerData.push(_referrerData[28]);
                 referrerData[50].latitude = "43.5";
                 referrerData[50].longitude = "-79.5";
-
-
 
 
                 // 'per' client data: indexed by client id, will contain lat/lon/item_count/array of visit dates, city
@@ -282,10 +276,10 @@
         var startHere = function(){
             // load the data
             queue()
-                    .defer(d3.csv, 'data/citydata.csv')
-                    .defer(d3.csv, 'data/clientdata.csv')
-                    .defer(d3.csv, 'data/referrerdata.csv')
-                    .defer(d3.csv, 'data/storedata.csv')
+                    .defer(d3.csv, 'citydata.csv')
+                    .defer(d3.csv, 'clientdata.csv')
+                    .defer(d3.csv, 'referrerdata.csv')
+                    .defer(d3.csv, 'storedata.csv')
                     .await(function(error,cityData, clientdata, referrerdata, storedata) {
                        dataLoaded(error,cityData, clientdata, referrerdata, storedata);
                     });

@@ -117,20 +117,6 @@ ClientDetailVis.prototype.onSelectionChange= function (_client_id){
                     .attr('fill-opacity', 0.9);
             }
         });
-
-        // TODO highlight circle in timeVis (this happens also when client node in graphVis is selected
-        // this is a bit weird )
-       // console.log(d3.select('#timeVis').selectAll('circle').data());
-/*
-        d3.select('#timeVis').selectAll('circle').data().forEach(function(item, i) {
-           // console.log(_client_id, item.client_id);
-            if (parseInt(item.client_id) == _client_id) {
-                console.log("yew", d3.select('#timeVis').selectAll('circle')[0][i]);
-                d3.select(d3.select('#timeVis').selectAll('circle')[0][i])
-                   .attr('r', 100);
-            }
-        });*/
-
         // only update plot when mouse hits a referrer otherwise leave it for inspection
         this.displayData = this.perClientData[parseInt(_client_id)];
 

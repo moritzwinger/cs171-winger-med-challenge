@@ -63,11 +63,11 @@ TimeVis.prototype.initVis = function(){
         .attr("class", "x axis")
         .attr("transform", "translate(0," + this.height + ")")
         .style("font-size", "24px")
-        .attr('fill-opacity', 0.4);
+        .attr('fill-opacity', 0.7);
 
     this.svg.append("g")
         .attr("class", "y axis")
-        .style("fill-opacity", 0.4)
+        .style("fill-opacity", 0.7)
         .append("text")
         .attr("transform", "rotate(-90)")
         .style("font-size", "24px")
@@ -143,9 +143,7 @@ TimeVis.prototype.updateVis = function(){
             .attr('stroke-opacity', 0.2)
             .attr("transform", "translate("+ this.margin.left + ", " + this.margin.top + ")")
             .on("mouseover", function(d){
-                // find associated client id and highlight circles in the
-                // current plot
-               //  console.log(d3.select(this.nextElementSibling).data()[0]);
+                // find associated client id and highlight circles in the current plot
                 var associated_referrer_code = d3.select(this.nextElementSibling).data()[0].referrer_code;
                 var associated_client_id = d3.select(this.nextElementSibling).data()[0].client_id;
 
@@ -161,9 +159,6 @@ TimeVis.prototype.updateVis = function(){
                 temp.selectAll("circle").data().forEach( function(item, i) {
                     if (item.client_id == associated_client_id) {
                         var tmp = d3.select("#graphVis").selectAll("circle");
-                        // TODO highlight client circle in graphVis
-                      //  console.log(d3.select(tmp[i]));
-                          //  .attr('fill-opacity', 0.7);
                     }
                 });
                 d3.select(this)
@@ -202,23 +197,15 @@ TimeVis.prototype.updateVis = function(){
             .attr('fill-opacity', 0.2)
             .attr("transform", "translate("+ this.margin.left + ", " + this.margin.top + ")")
             .on("mouseover", function(d){
-                // highlight path
+
                 d3.selectAll("path").forEach(function(item, i) {
-                    //TODO
-               //     console.log(item);
-               //     console.log(item);
-                  //  console.log(i, item[i]);
-                   // d3.select(item[i])
+                    // highlight path here
                 });
 
-                //d3.select(this.nextElementSibling)
-                 //   .attr("stroke-opacity", 0.7)
-                   // .attr('stroke-width', 1.5);
                 // highlight circle
                 d3.select(this).attr("fill-opacity", 0.7);
                 d3.select(this).attr('r', 4);
                 $(that.clientEventHandler).trigger("selectionChanged", (d.client_id).toString());
-                // TODO highlight associated line and connected circles
             })
             .on("mouseout", function(d){
                 // reset the circles

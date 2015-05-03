@@ -17,8 +17,6 @@ ReferrerDetailVis = function(_parentElement, _referrerData, _perClientData, _cli
                         postal_code_referrer: "",
                         visit_count: ""};
 
-
-
     // define all "constants" here
     this.margin = {top: 20, right: 20, bottom: 50, left: 60},
         this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right,

@@ -57,7 +57,7 @@ BarVis.prototype.initVis = function(){
 
     this.svg.append("g")
         .attr("class", "y axis")
-        .style("fill-opacity", 0.4)
+        .style("fill-opacity", 0.7)
         .append("text")
         .attr("transform", "rotate(-90)")
         .style("font-size", "24px")

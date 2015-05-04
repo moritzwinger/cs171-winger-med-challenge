@@ -2,7 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0da9423d-a420-40cc-b020-306efb864b13" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ProcessBook.md" afterPath="$PROJECT_DIR$/ProcessBook.md" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/ProcessBook.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_000011.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_000011.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_000011.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_000011.synctex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_000011.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_ProcessBook.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_ProcessBook.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_ProcessBook.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/TSWLatexianTemp_ProcessBook.tex" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="cs171-winger-med-challenge.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -86,21 +96,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Report.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Report.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Report.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.0" vertical-offset="0" max-vertical-offset="1005">
-              <caret line="20" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProcessBook.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ProcessBook.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7932619" vertical-offset="292" max-vertical-offset="975">
-              <caret line="54" column="22" selection-start-line="0" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7643312" vertical-offset="0" max-vertical-offset="1005">
+              <caret line="32" column="46" selection-start-line="32" selection-start-column="46" selection-end-line="32" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -710,16 +710,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Report.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.0" vertical-offset="0" max-vertical-offset="1005">
-          <caret line="20" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ProcessBook.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7932619" vertical-offset="292" max-vertical-offset="975">
-          <caret line="54" column="22" selection-start-line="0" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.7643312" vertical-offset="0" max-vertical-offset="1005">
+          <caret line="32" column="46" selection-start-line="32" selection-start-column="46" selection-end-line="32" selection-end-column="46" />
           <folding />
         </state>
       </provider>

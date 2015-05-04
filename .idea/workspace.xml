@@ -100,7 +100,7 @@
         <entry file="file://$PROJECT_DIR$/ProcessBook.md">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.6431853" vertical-offset="0" max-vertical-offset="653">
-              <caret line="28" column="29" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+              <caret line="28" column="77" selection-start-line="28" selection-start-column="77" selection-end-line="28" selection-end-column="77" />
               <folding />
             </state>
           </provider>
@@ -719,7 +719,7 @@
     <entry file="file://$PROJECT_DIR$/ProcessBook.md">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6431853" vertical-offset="0" max-vertical-offset="653">
-          <caret line="28" column="29" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+          <caret line="28" column="77" selection-start-line="28" selection-start-column="77" selection-end-line="28" selection-end-column="77" />
           <folding />
         </state>
       </provider>

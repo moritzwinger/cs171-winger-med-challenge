@@ -26,4 +26,4 @@ The provided datasets are enough to answer the three questions with appropraite 
 
 ### Design Iterations
 
-![alt tag](https://github.com/moritzwinger/cs171-winger-med-challenge/Design_sketches.jpg)
+![alt tag](https://github.com/moritzwinger/cs171-winger-med-challenge/master/Design_sketches.jpg)

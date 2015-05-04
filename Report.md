@@ -58,5 +58,5 @@ other referral sources, such as Walk-In etc. Most customers come from the vicini
 
 ### Possible Improvements and Extensions:
 
-Adding total items purchased per referral source in the detail text visualization, and highlight lines on mouseover of
+Adding total items purchased per referral source in the detail text visualization, and highlight lines on mouse-over of
 client dots, when a client has visited more than once.

@@ -24,6 +24,19 @@ geo-data.
 
 The provided datasets are enough to answer the three questions with appropraite representation.
 
-### Design Iterations
+### Design Iteration 1
 
 ![alt tag](https://github.com/moritzwinger/cs171-winger-med-challenge/master/Design_sketches.jpg)
+
+The first design proposition was a visualization that shows all clients and referrers on a map and allows
+interaction on hovering the mouse over a client or referrer. By this type of interaction, the viewer can
+extract toatal and time-averaged quantities such as total visits, visits per client, total purchased items, etc.
+
+To address the question on time-resolved properties, the visualization would also have a time-slider, where
+properties are shown as a function of time.
+
+A simple implementation of this feature, however showed that the data was to sparse to efficiently populate
+the graph (map) and properly visualize the desired quantities. ALso it would have been hard to compare quantities
+at different points in time.
+
+### Design Iteration 2

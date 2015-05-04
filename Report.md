@@ -47,3 +47,11 @@ JavaScript files that implement the individual parts of the visualization.
 The different parts interact via event handlers that trigger the actions required upon user interactions.
 
 ### Evaluation:
+
+The data implies that referral sources close to the medical store of interest are the most prolific, if not considering
+other referral sources, such as Walk-In etc. Most customers come from the vicinity of the store and buy a small amount
+ of items (0-3) each visit. Clients tend to come from the vicinity of the store, seemingly independent of their
+ referral source.
+ The visualization has the potential to answer all the questions posed above by extensive  study of the visualization.
+ Interaction with the visualization feels natural, and consequences of actions are intuitive and logical.
+ The product is well rounded, simple and does not require extensive documentation.

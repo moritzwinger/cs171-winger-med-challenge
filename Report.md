@@ -42,4 +42,8 @@ in referrer and client data.
 
 ### Implementation:
 
+The visualization has been used using the d3 library (http://d3js.org/). Code is organized in one html file and multiple
+JavaScript files that implement the individual parts of the visualization.
+The different parts interact via event handlers that trigger the actions required upon user interactions.
+
 ### Evaluation:

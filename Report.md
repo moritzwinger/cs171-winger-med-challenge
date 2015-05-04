@@ -34,10 +34,10 @@ This part of the visualization is intended to give the viewer an idea of where t
 most prolific referral sources are.
 To be able to analyze data quantitatively, the rest of the visualization has been implemented. It was clear that
 when selecting a referral source or client, that the viewer will want to know about the selected object in more detail,
-which is why the barchart on referrer sources vs referred clients, the time resolved visit history and details
-on clients and referrers has been created.
+which is why the bar chart on referrer sources vs referred clients, the time resolved visit history and details
+on clients and referrers have been created.
 The idea was to keep the visualization as simple and clean as possible and let interaction be the driving force of
-understanding the data. Selecting datapoints anywhere in the visualization should intuitively show trends and connections
+understanding the data. Selecting data points anywhere in the visualization should intuitively show trends and connections
 in referrer and client data.
 
 ### Implementation:

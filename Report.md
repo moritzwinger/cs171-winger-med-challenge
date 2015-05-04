@@ -55,3 +55,8 @@ other referral sources, such as Walk-In etc. Most customers come from the vicini
  The visualization has the potential to answer all the questions posed above by extensive  study of the visualization.
  Interaction with the visualization feels natural, and consequences of actions are intuitive and logical.
  The product is well rounded, simple and does not require extensive documentation.
+
+### Possible Improvements and Extensions:
+
+Adding total items purchased per referral source in the detail text visualization, and highlight lines on mouseover of
+client dots, when a client has visited more than once.
